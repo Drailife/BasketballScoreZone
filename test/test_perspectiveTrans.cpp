@@ -75,8 +75,15 @@ int main() {
               << playerFootPointNorm.y << ")" << std::endl;
     std::cout << "模板映射点: (" << scoreResult.templatePoint.x << ", "
               << scoreResult.templatePoint.y << ")" << std::endl;
-    std::cout << "是否三分线外: "
-              << (scoreResult.outsideThreeLine ? "是" : "否") << std::endl;
+    std::string scoreLabel;
+    if (scoreResult.score == 1) {
+        scoreLabel = "1分（罚球线中点附近）";
+    } else if (scoreResult.outsideThreeLine) {
+        scoreLabel = "3分（三分线外）";
+    } else {
+        scoreLabel = "2分（三分线内）";
+    }
+    std::cout << "得分判定: " << scoreLabel << std::endl;
     std::cout << "分值: " << scoreResult.score << std::endl;
     return 0;
 }

@@ -1,12 +1,11 @@
 #include "ScoreStrategy.h"
 #include <cmath>
-#include <limits>
-#include <stdexcept>
 
 namespace XbotGoAiAnalysis {
 namespace {
 
 constexpr int kTemplatePointCount = 6; // 模板点数量
+constexpr float kMinKeyPointScore = 0.5f;
 constexpr double kTemplateWidth = 581.0; // 模板图宽度（单位：像素）
 constexpr double kTemplateHeight = 345.0; // 模板图高度（单位：像素）
 
@@ -17,6 +16,9 @@ constexpr double kThreeLineRightX = 543.235; // 三分线右侧X坐标（单位�
 constexpr double kThreeLineCornerY = 117.3; // 三分线角落Y坐标（单位：像素）
 constexpr double kThreeLineRadius = 255.0; // 三分线半径（单位：像素）
 constexpr double kThreeLineEps = 10.0; // 三分线判断误差（单位：像素）
+constexpr double kFreeThrowCenterX = 290.7905; // 罚球线中点X坐标（单位：像素）
+constexpr double kFreeThrowCenterY = 224.250; // 罚球线中点Y坐标（单位：像素）
+constexpr double kFreeThrowOnePointRadius = 25; // 判定1分的距离阈值（单位：像素）
 
 bool isFinite(double value) {
     return std::isfinite(value);
@@ -32,11 +34,17 @@ bool isMissingPoint(const Point2f& point) {
     return point.x == 0.0f && point.y == 0.0f;
 }
 
+bool shouldSkipByScore(const Point2f& point) {
+    // score == 0 表示调用方没有传置信度；只有明确给出低置信度时才过滤。
+    return point.score > 0.0f && point.score < kMinKeyPointScore;
+}
+
 ScoreResult defaultTwoPointResult(const Point2f& imagePoint,
                                   const std::string& reason) {
     ScoreResult result;
     result.success = false;
     result.score = 2;
+    result.nearFreeThrowCenter = false;
     result.outsideThreeLine = false;
     result.area = ThreePointArea::UNKNOWN;
     result.imagePoint = imagePoint;
@@ -83,11 +91,11 @@ bool ScoreStrategy::isReady() const {
     return m_ready;
 }
 
-std::string ScoreStrategy::lastError() const {
+const std::string& ScoreStrategy::lastError() const {
     return m_lastError;
 }
 
-std::vector<std::vector<double>> ScoreStrategy::getHomography() const {
+const std::vector<std::vector<double>>& ScoreStrategy::getHomography() const {
     return m_imageToTemplateH;
 }
 
@@ -113,6 +121,14 @@ ScoreResult ScoreStrategy::judgePlayerPoint(const Point2f& playerPointNorm,
     return result;
 }
 
+ScoreResult ScoreStrategy::judgePlayerBox(const Point2f& leftTopNorm,
+                                          const Point2f& rightBottomNorm,
+                                          bool lineAsOutside) const {
+    return judgePlayerPoint(
+        footPointFromBox(leftTopNorm, rightBottomNorm),
+        lineAsOutside);
+}
+
 ScoreResult ScoreStrategy::judgePlayerPoint(
     const Point2f& playerPointNorm,
     const std::vector<Point2f>& imageKeyPoints,
@@ -133,6 +149,19 @@ ScoreResult ScoreStrategy::judgeTemplatePoint(const Point2f& templatePointNorm,
 
     bool outside = false;
     bool onLine = false;
+
+    result.distanceToFreeThrowCenter = std::hypot(
+        x - kFreeThrowCenterX,
+        y - kFreeThrowCenterY);
+    if (result.distanceToFreeThrowCenter <= kFreeThrowOnePointRadius) {
+        result.region = "free_throw_center_area";
+        result.nearFreeThrowCenter = true;
+        result.outsideThreeLine = false;
+        result.onThreeLine = false;
+        result.area = ThreePointArea::INSIDE;
+        result.score = 1;
+        return result;
+    }
 
     if (y <= kThreeLineCornerY) {
         result.region = "corner_line_area";
@@ -163,6 +192,7 @@ ScoreResult ScoreStrategy::judgeTemplatePoint(const Point2f& templatePointNorm,
     }
 
     result.onThreeLine = onLine;
+    result.nearFreeThrowCenter = false;
     result.outsideThreeLine = outside;
     result.area = outside ? ThreePointArea::OUTSIDE : ThreePointArea::INSIDE;
     result.score = outside ? 3 : 2;
@@ -193,8 +223,7 @@ bool ScoreStrategy::buildHomography(const std::vector<Point2f>& imageKeyPoints) 
     dstPoints.reserve(kTemplatePointCount);
 
     for (std::size_t i = 0; i < imageKeyPoints.size(); ++i) {
-        // Filter by score: only keep points with score > 0.5
-        if (imageKeyPoints[i].score < 0.5f) {
+        if (shouldSkipByScore(imageKeyPoints[i])) {
             continue;
         }
 

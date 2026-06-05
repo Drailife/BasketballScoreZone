@@ -4,13 +4,28 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 using json = nlohmann::json;
 using namespace XbotGoAiAnalysis;
 
+int keypointIndexFromLabel(const std::string& label) {
+    if (label == "A") return 0;
+    if (label == "B") return 1;
+    if (label == "C") return 2;
+    if (label == "D") return 3;
+    if (label == "E") return 4;
+    if (label == "F") return 5;
+    return -1;
+}
+
+Point2f normalizedPoint(float x, float y, float width, float height, float score = 0.0f) {
+    return Point2f(x / width, y / height, score);
+}
+
 int main() {
     // Read JSON file
-    std::ifstream jsonFile("strategy/test_detections_score.json");
+    std::ifstream jsonFile("python/testImgs/right_detections.json");
     if (!jsonFile.is_open()) {
         std::cerr << "Error: Cannot open JSON file" << std::endl;
         return 1;
@@ -29,21 +44,28 @@ int main() {
     float imageHeight = data["image_height"].get<float>();
     std::cout << "Image size: " << imageWidth << " x " << imageHeight << std::endl;
 
-    // Extract keypoints (A-F)
-    std::vector<Point2f> imageKeyPointsNorm;
-    const auto& validKeypoints = data["valid_keypoints"];
-    
-    std::cout << "\n=== Keypoints (A-F) ===" << std::endl;
-    for (const auto& kp : validKeypoints) {
+    // 只读取原始 keypoints。低置信点、缺失点由 ScoreStrategy 内部决定是否参与 H。
+    std::vector<Point2f> imageKeyPointsNorm(6);
+    const auto& keypoints = data["keypoints"];
+
+    std::cout << "\n=== Raw Keypoints (A-F) ===" << std::endl;
+    for (const auto& kp : keypoints) {
         std::string label = kp["label"].get<std::string>();
-        auto source = kp["source"];
-        float x = source[0].get<float>() / imageWidth;
-        float y = source[1].get<float>() / imageHeight;
+        int index = keypointIndexFromLabel(label);
+        if (index < 0) {
+            continue;
+        }
+
+        float x = kp["x"].get<float>();
+        float y = kp["y"].get<float>();
         float conf = kp["conf"].get<float>();
-        
-        imageKeyPointsNorm.push_back(Point2f(x, y, conf));
+
+        imageKeyPointsNorm[index] = normalizedPoint(x, y, imageWidth, imageHeight, conf);
         std::cout << label << ": (" << std::fixed << std::setprecision(4) 
-                  << x << ", " << y << ") conf=" << conf << std::endl;
+                  << imageKeyPointsNorm[index].x << ", "
+                  << imageKeyPointsNorm[index].y << ") conf=" << conf
+                  << (conf < 0.5f ? "  -> filtered by strategy" : "")
+                  << std::endl;
     }
 
     // Build homography
@@ -65,21 +87,40 @@ int main() {
         int personId = person["id"].get<int>();
         float conf = person["conf"].get<float>();
         
-        auto footPoint = person["foot_point"];
-        float footX = footPoint[0].get<float>() / imageWidth;
-        float footY = footPoint[1].get<float>() / imageHeight;
-        
-        // Judge if person is outside three-line
-        ScoreResult result = scoreStrategy.judgePlayerPoint(Point2f(footX, footY, conf), true);
+        auto xyxy = person["xyxy"];
+        Point2f leftTop = normalizedPoint(
+            xyxy[0].get<float>(),
+            xyxy[1].get<float>(),
+            imageWidth,
+            imageHeight);
+        Point2f rightBottom = normalizedPoint(
+            xyxy[2].get<float>(),
+            xyxy[3].get<float>(),
+            imageWidth,
+            imageHeight);
+        Point2f footPoint = ScoreStrategy::footPointFromBox(leftTop, rightBottom);
+
+        // 外部只传人物框；脚点计算和内外线判断由 ScoreStrategy 接口完成。
+        ScoreResult result = scoreStrategy.judgePlayerBox(leftTop, rightBottom, true);
         
         std::cout << "Person " << personId 
                   << " (conf=" << std::fixed << std::setprecision(3) << conf << ")"
-                  << " | Foot: (" << footX << ", " << footY << ")" << std::endl;
+                  << " | Foot: (" << footPoint.x << ", " << footPoint.y << ")"
+                  << std::endl;
         
         if (result.success) {
+            std::string scoreTag;
+            if (result.score == 1) {
+                scoreTag = "1PT";
+            } else if (result.outsideThreeLine) {
+                scoreTag = "3PT-OUT";
+            } else {
+                scoreTag = "2PT-IN";
+            }
+
             std::cout << "  Region: " << result.region 
                       << " | Score: " << result.score
-                      << " | Outside: " << (result.outsideThreeLine ? "YES (3pt)" : "NO (2pt)") << std::endl;
+                      << " | Result: " << scoreTag << std::endl;
             
             if (result.distanceToCenter >= 0) {
                 std::cout << "  Distance to center: " << std::fixed << std::setprecision(2) 
@@ -94,17 +135,27 @@ int main() {
     std::cout << "Total persons processed: " << personCount << std::endl;
     
     // Summary statistics
+    int personOne = 0;
     int personOutside = 0;
     int personInside = 0;
     for (const auto& person : persons) {
-        auto footPoint = person["foot_point"];
-        float footX = footPoint[0].get<float>() / imageWidth;
-        float footY = footPoint[1].get<float>() / imageHeight;
-        float conf = person["conf"].get<float>();
-        
-        ScoreResult result = scoreStrategy.judgePlayerPoint(Point2f(footX, footY, conf), true);
+        auto xyxy = person["xyxy"];
+        Point2f leftTop = normalizedPoint(
+            xyxy[0].get<float>(),
+            xyxy[1].get<float>(),
+            imageWidth,
+            imageHeight);
+        Point2f rightBottom = normalizedPoint(
+            xyxy[2].get<float>(),
+            xyxy[3].get<float>(),
+            imageWidth,
+            imageHeight);
+
+        ScoreResult result = scoreStrategy.judgePlayerBox(leftTop, rightBottom, true);
         if (result.success) {
-            if (result.outsideThreeLine) {
+            if (result.score == 1) {
+                personOne++;
+            } else if (result.outsideThreeLine) {
                 personOutside++;
             } else {
                 personInside++;
@@ -113,6 +164,7 @@ int main() {
     }
 
     std::cout << "\n=== Summary ===" << std::endl;
+    std::cout << "Persons in 1-point area: " << personOne << std::endl;
     std::cout << "Persons outside 3-line: " << personOutside << std::endl;
     std::cout << "Persons inside 3-line: " << personInside << std::endl;
     
