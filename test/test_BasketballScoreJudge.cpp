@@ -1,5 +1,5 @@
 #include "perspectiveTransform.h"
-#include "ScoreStrategy.h"
+#include "BasketballScoreJudge.h"
 #include "json.hpp"
 #include <fstream>
 #include <iostream>
@@ -44,7 +44,7 @@ int main() {
     float imageHeight = data["image_height"].get<float>();
     std::cout << "Image size: " << imageWidth << " x " << imageHeight << std::endl;
 
-    // 只读取原始 keypoints。低置信点、缺失点由 ScoreStrategy 内部决定是否参与 H。
+    // 只读取原始 keypoints。低置信点、缺失点由 BasketballScoreJudge 内部决定是否参与 H。
     std::vector<Point2f> imageKeyPointsNorm(6);
     const auto& keypoints = data["keypoints"];
 
@@ -69,7 +69,7 @@ int main() {
     }
 
     // Build homography
-    ScoreStrategy scoreStrategy(imageKeyPointsNorm);
+    BasketballScoreJudge scoreStrategy(imageKeyPointsNorm);
     if (!scoreStrategy.isReady()) {
         std::cerr << "Error: Failed to build homography - " << scoreStrategy.lastError() << std::endl;
         return 1;
@@ -98,9 +98,9 @@ int main() {
             xyxy[3].get<float>(),
             imageWidth,
             imageHeight);
-        Point2f footPoint = ScoreStrategy::footPointFromBox(leftTop, rightBottom);
+        Point2f footPoint = BasketballScoreJudge::footPointFromBox(leftTop, rightBottom);
 
-        // 外部只传人物框；脚点计算和内外线判断由 ScoreStrategy 接口完成。
+        // 外部只传人物框；脚点计算和内外线判断由 BasketballScoreJudge 接口完成。
         ScoreResult result = scoreStrategy.judgePlayerBox(leftTop, rightBottom, true);
         
         std::cout << "Person " << personId 

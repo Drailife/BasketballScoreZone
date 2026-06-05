@@ -1,4 +1,4 @@
-#include "ScoreStrategy.h"
+#include "BasketballScoreJudge.h"
 #include <cmath>
 
 namespace XbotGoAiAnalysis {
@@ -53,11 +53,11 @@ ScoreResult defaultTwoPointResult(const Point2f& imagePoint,
 
 } // namespace
 
-ScoreStrategy::ScoreStrategy(const std::vector<Point2f>& imageKeyPoints) {
+BasketballScoreJudge::BasketballScoreJudge(const std::vector<Point2f>& imageKeyPoints) {
     setImageKeyPoints(imageKeyPoints);
 }
 
-std::vector<Point2f> ScoreStrategy::getStandardTemplateKeyPoints() {
+std::vector<Point2f> BasketballScoreJudge::getStandardTemplateKeyPoints() {
     return {
         Point2f(0.06884681583476764f, 0.011594202898550725f, 1.0f),
         Point2f(0.342512908777969f, 0.014492753623188406f, 1.0f),
@@ -68,11 +68,11 @@ std::vector<Point2f> ScoreStrategy::getStandardTemplateKeyPoints() {
     };
 }
 
-bool ScoreStrategy::setImageKeyPoints(const std::vector<Point2f>& imageKeyPoints) {
+bool BasketballScoreJudge::setImageKeyPoints(const std::vector<Point2f>& imageKeyPoints) {
     return buildHomography(imageKeyPoints);
 }
 
-bool ScoreStrategy::setHomography(const std::vector<std::vector<double>>& imageToTemplateH) {
+bool BasketballScoreJudge::setHomography(const std::vector<std::vector<double>>& imageToTemplateH) {
     if (!isValidHomography(imageToTemplateH)) {
         m_imageToTemplateH.clear();
         m_ready = false;
@@ -86,19 +86,19 @@ bool ScoreStrategy::setHomography(const std::vector<std::vector<double>>& imageT
     return true;
 }
 
-bool ScoreStrategy::isReady() const {
+bool BasketballScoreJudge::isReady() const {
     return m_ready;
 }
 
-const std::string& ScoreStrategy::lastError() const {
+const std::string& BasketballScoreJudge::lastError() const {
     return m_lastError;
 }
 
-const std::vector<std::vector<double>>& ScoreStrategy::getHomography() const {
+const std::vector<std::vector<double>>& BasketballScoreJudge::getHomography() const {
     return m_imageToTemplateH;
 }
 
-ScoreResult ScoreStrategy::judgePlayerPoint(const Point2f& playerPointNorm,
+ScoreResult BasketballScoreJudge::judgePlayerPoint(const Point2f& playerPointNorm,
                                             bool lineAsOutside) const {
     if (!isValidNormalizedPoint(playerPointNorm)) {
         return defaultTwoPointResult(playerPointNorm, "INVALID_PLAYER_POINT");
@@ -120,7 +120,7 @@ ScoreResult ScoreStrategy::judgePlayerPoint(const Point2f& playerPointNorm,
     return result;
 }
 
-ScoreResult ScoreStrategy::judgePlayerBox(const Point2f& leftTopNorm,
+ScoreResult BasketballScoreJudge::judgePlayerBox(const Point2f& leftTopNorm,
                                           const Point2f& rightBottomNorm,
                                           bool lineAsOutside) const {
     return judgePlayerPoint(
@@ -128,15 +128,15 @@ ScoreResult ScoreStrategy::judgePlayerBox(const Point2f& leftTopNorm,
         lineAsOutside);
 }
 
-ScoreResult ScoreStrategy::judgePlayerPoint(
+ScoreResult BasketballScoreJudge::judgePlayerPoint(
     const Point2f& playerPointNorm,
     const std::vector<Point2f>& imageKeyPoints,
     bool lineAsOutside) {
-    ScoreStrategy strategy(imageKeyPoints);
+    BasketballScoreJudge strategy(imageKeyPoints);
     return strategy.judgePlayerPoint(playerPointNorm, lineAsOutside);
 }
 
-ScoreResult ScoreStrategy::judgeTemplatePoint(const Point2f& templatePointNorm,
+ScoreResult BasketballScoreJudge::judgeTemplatePoint(const Point2f& templatePointNorm,
                                               bool lineAsOutside) {
     ScoreResult result;
     result.success = true;
@@ -198,14 +198,14 @@ ScoreResult ScoreStrategy::judgeTemplatePoint(const Point2f& templatePointNorm,
     return result;
 }
 
-Point2f ScoreStrategy::footPointFromBox(const Point2f& leftTopNorm,
+Point2f BasketballScoreJudge::footPointFromBox(const Point2f& leftTopNorm,
                                         const Point2f& rightBottomNorm) {
     return Point2f(
         (leftTopNorm.x + rightBottomNorm.x) * 0.5f,
         rightBottomNorm.y);
 }
 
-bool ScoreStrategy::buildHomography(const std::vector<Point2f>& imageKeyPoints) {
+bool BasketballScoreJudge::buildHomography(const std::vector<Point2f>& imageKeyPoints) {
     m_imageToTemplateH.clear();
     m_ready = false;
     m_lastError.clear();
@@ -254,7 +254,7 @@ bool ScoreStrategy::buildHomography(const std::vector<Point2f>& imageKeyPoints) 
     }
 }
 
-bool ScoreStrategy::isValidHomography(const std::vector<std::vector<double>>& H) {
+bool BasketballScoreJudge::isValidHomography(const std::vector<std::vector<double>>& H) {
     if (H.size() != 3) {
         return false;
     }
@@ -274,7 +274,7 @@ bool ScoreStrategy::isValidHomography(const std::vector<std::vector<double>>& H)
     return true;
 }
 
-bool ScoreStrategy::mapPointToTemplate(const Point2f& imagePointNorm,
+bool BasketballScoreJudge::mapPointToTemplate(const Point2f& imagePointNorm,
                                        const std::vector<std::vector<double>>& H,
                                        Point2f& templatePointNorm) {
     if (!isValidHomography(H)) {

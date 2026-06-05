@@ -14,7 +14,7 @@
 ```text
 输入图像
   -> strategy/GenerateDetData.py 生成检测 JSON
-  -> C++ ScoreStrategy 读取 A-F 关键点并内部过滤低置信点
+  -> C++ BasketballScoreJudge 读取 A-F 关键点并内部过滤低置信点
   -> 计算 原图 -> 模板图 的单应性矩阵
   -> 取人物框底边中心作为脚点
   -> 将脚点映射到模板坐标
@@ -26,13 +26,13 @@
 
 ```text
 BasketballCourtMapper.cpp / BasketballCourtMapper.h   场地线映射入口
-ScoreStrategy.cpp / ScoreStrategy.h                   得分区域判断策略
+BasketballScoreJudge.cpp / BasketballScoreJudge.h     得分区域判断模块
 perspectiveTransform.cpp / perspectiveTransform.h     单应性矩阵与点透视变换
 json.hpp                                              C++ JSON 解析头文件
 main.cpp                                              场地线映射调用示例
 
 test/
-  test_ScoreStrategy.cpp                              C++ 得分策略 JSON 回放测试
+  test_BasketballScoreJudge.cpp                      C++ 得分判定 JSON 回放测试
   test_perspectiveTrans.cpp                           C++ 单应性矩阵测试
 
 strategy/
@@ -84,12 +84,12 @@ C++ 测试和策略应该读取原始 `keypoints` 字段，不要把 `valid_keyp
 
 ## C++ 得分策略
 
-`ScoreStrategy` 对外只需要先初始化一次 A-F 关键点，之后每个人只传人物框或人物脚点即可。
+`BasketballScoreJudge` 对外只需要先初始化一次 A-F 关键点，之后每个人只传人物框或人物脚点即可。
 
 注意：C++ 接口使用归一化坐标，测试文件会把 JSON 像素坐标除以图像宽高。
 
 ```cpp
-#include "ScoreStrategy.h"
+#include "BasketballScoreJudge.h"
 
 using namespace XbotGoAiAnalysis;
 
@@ -105,7 +105,7 @@ keypoints[3] = normalizedPoint(xD, yD, imageWidth, imageHeight, confD); // D
 keypoints[4] = normalizedPoint(xE, yE, imageWidth, imageHeight, confE); // E
 keypoints[5] = normalizedPoint(xF, yF, imageWidth, imageHeight, confF); // F
 
-ScoreStrategy strategy(keypoints);
+BasketballScoreJudge strategy(keypoints);
 if (!strategy.isReady()) {
     // 点不足或单应性矩阵失败时，后续判断会默认返回 2 分。
     std::cout << strategy.lastError() << std::endl;
@@ -127,7 +127,7 @@ ScoreResult result = strategy.judgePlayerPoint(footPointNorm);
 
 ## 关键点过滤规则
 
-`ScoreStrategy` 内部会自己决定哪些 A-F 点参与单应性矩阵计算，外部不需要提前筛选。
+`BasketballScoreJudge` 内部会自己决定哪些 A-F 点参与单应性矩阵计算，外部不需要提前筛选。
 
 - 必须按 A-F 顺序传入 6 个点。
 - `(0, 0)` 会被视为缺失点并跳过。
@@ -231,7 +231,7 @@ cmake --build build -j
 运行测试：
 
 ```bash
-./build/test_score
+./build/test_basketball_score_judge
 ./build/test_perspectiveTrans
 ```
 
@@ -241,7 +241,7 @@ cmake --build build -j
 ./build/demo
 ```
 
-当前 `test/test_ScoreStrategy.cpp` 默认读取：
+当前 `test/test_BasketballScoreJudge.cpp` 默认读取：
 
 ```text
 python/testImgs/right_detections.json
@@ -277,7 +277,7 @@ if (result.success) {
 ## 坐标约定
 
 - JSON 中的关键点和人物框是像素坐标。
-- C++ `ScoreStrategy` 输入是归一化坐标，范围 `[0, 1]`。
+- C++ `BasketballScoreJudge` 输入是归一化坐标，范围 `[0, 1]`。
 - C++ 模板 A-F 点使用归一化坐标。
 - Python `strategy/ScoreStrategy.py` 内部使用 `581 x 345` 模板像素坐标进行可视化和模板叠加。
 
@@ -297,7 +297,7 @@ Python：
 
 ## 开发备注
 
-- 计分策略的主要调用文件是 `ScoreStrategy.cpp` / `ScoreStrategy.h`。
-- `test/test_ScoreStrategy.cpp` 展示了从 JSON 读取 `keypoints` 和 `persons.xyxy` 的完整流程。
-- 低置信关键点过滤已经放在 `ScoreStrategy` 内部，调用方只需要传原始 A-F 点。
+- 计分判定的主要调用文件是 `BasketballScoreJudge.cpp` / `BasketballScoreJudge.h`。
+- `test/test_BasketballScoreJudge.cpp` 展示了从 JSON 读取 `keypoints` 和 `persons.xyxy` 的完整流程。
+- 低置信关键点过滤已经放在 `BasketballScoreJudge` 内部，调用方只需要传原始 A-F 点。
 - 当单应性矩阵不可用时，策略会按默认 2 分返回，避免因为关键点缺失导致流程中断。

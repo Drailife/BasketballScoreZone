@@ -1,5 +1,5 @@
-#ifndef SCORESTRATEGY_H
-#define SCORESTRATEGY_H
+#ifndef BASKETBALL_SCORE_JUDGE_H
+#define BASKETBALL_SCORE_JUDGE_H
 
 #include "perspectiveTransform.h"
 #include <string>
@@ -31,10 +31,10 @@ struct ScoreResult {
 
 // 计分策略：先用 A-F 关键点建立“原图 -> 模板图”的单应性矩阵，
 // 后续只需要传人物脚点归一化坐标，即可返回 1/2/3 分。
-class ScoreStrategy {
+class BasketballScoreJudge {
 public:
-    ScoreStrategy() = default;
-    explicit ScoreStrategy(const std::vector<Point2f>& imageKeyPoints);
+    BasketballScoreJudge() = default;
+    explicit BasketballScoreJudge(const std::vector<Point2f>& imageKeyPoints);
 
     static std::vector<Point2f> getStandardTemplateKeyPoints();
 
@@ -83,4 +83,4 @@ private:
 
 } // namespace XbotGoAiAnalysis
 
-#endif // SCORESTRATEGY_H
+#endif // BASKETBALL_SCORE_JUDGE_H

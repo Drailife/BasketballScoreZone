@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "perspectiveTransform.h"
-#include "ScoreStrategy.h"
+#include "BasketballScoreJudge.h"
 using namespace XbotGoAiAnalysis;
 
 int main() {
@@ -62,10 +62,10 @@ int main() {
         return 1;
     }
 
-    // 计分策略示例：初始化后，只需要输入人物脚点的相对坐标
-    ScoreStrategy scoreStrategy(pts_A_pixel);
+    // 计分判定示例：初始化后，只需要输入人物脚点的相对坐标
+    BasketballScoreJudge scoreStrategy(pts_A_pixel);
     if (!scoreStrategy.isReady()) {
-        std::cerr << "计分策略初始化失败: " << scoreStrategy.lastError() << std::endl;
+        std::cerr << "计分判定初始化失败: " << scoreStrategy.lastError() << std::endl;
         return 1;
     }
 
