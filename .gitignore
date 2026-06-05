@@ -1,0 +1,9 @@
+backup/
+build/
+.vscode/
+*.txt
+**/*copy*
+API_DOCUMENTATION.md
+__pycache__/
+*.pyc
+*.pyo
