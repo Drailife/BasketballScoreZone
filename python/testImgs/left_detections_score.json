@@ -120,9 +120,11 @@
         "outside": true,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 480.8791306431728
+        "distance_to_center": 480.8791306431728,
+        "distance_to_free_throw_center": 325.2907798649088
       },
       "outside_three_line": true,
+      "near_free_throw_center": false,
       "score": 3,
       "reason": "ok"
     },
@@ -147,9 +149,11 @@
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 167.66571264830168
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -174,9 +178,11 @@
         "outside": false,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 216.50373256834715
+        "distance_to_center": 216.50373256834715,
+        "distance_to_free_throw_center": 134.15695418424932
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -201,9 +207,11 @@
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 258.93073528011894
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -228,9 +236,11 @@
         "outside": false,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 233.1448149478705
+        "distance_to_center": 233.1448149478705,
+        "distance_to_free_throw_center": 146.79093275548047
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -255,9 +265,11 @@
         "outside": true,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 466.3278621736639
+        "distance_to_center": 466.3278621736639,
+        "distance_to_free_throw_center": 340.9858833163731
       },
       "outside_three_line": true,
+      "near_free_throw_center": false,
       "score": 3,
       "reason": "ok"
     },
@@ -282,9 +294,11 @@
         "outside": false,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 94.77219338607067
+        "distance_to_center": 94.77219338607067,
+        "distance_to_free_throw_center": 87.3378818610412
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -309,9 +323,11 @@
         "outside": false,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 146.02132470693417
+        "distance_to_center": 146.02132470693417,
+        "distance_to_free_throw_center": 107.88553020961142
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -336,9 +352,11 @@
         "outside": true,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 265.3710240334315
+        "distance_to_center": 265.3710240334315,
+        "distance_to_free_throw_center": 128.86716242469112
       },
       "outside_three_line": true,
+      "near_free_throw_center": false,
       "score": 3,
       "reason": "ok"
     },
@@ -363,9 +381,11 @@
         "outside": false,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 121.18661670964481
+        "distance_to_center": 121.18661670964481,
+        "distance_to_free_throw_center": 95.34583343141203
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -390,9 +410,11 @@
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 369.93085199111476
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
@@ -417,13 +439,16 @@
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 266.19728478604657
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     }
   ],
   "source_json_path": "python/testImgs/left_detections.json",
-  "score_visualization_path": "python/testImgs/left_persons_kps_score_vis.png"
+  "score_visualization_path": "python/testImgs/left_persons_kps_score_vis.png",
+  "score_template_overlay_path": "python/testImgs/left_persons_kps_score_vis_template_overlay.png"
 }

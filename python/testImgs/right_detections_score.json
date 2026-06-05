@@ -1,7 +1,7 @@
 {
   "image_path": "python/testImgs/right.png",
-  "image_width": 2745,
-  "image_height": 1532,
+  "image_width": 2719,
+  "image_height": 1508,
   "visualization_path": "python/testImgs/right_persons_kps.png",
   "keypoint_conf_threshold": 0.5,
   "valid_keypoint_count": 5,
@@ -9,598 +9,830 @@
     {
       "label": "A",
       "source": [
-        1056.9688720703125,
-        935.5986938476562
+        954.4188232421875,
+        928.607177734375
       ],
       "template": [
         40.0,
         4.0
       ],
-      "conf": 0.9999986886978149
+      "conf": 0.9999988079071045
     },
     {
       "label": "B",
       "source": [
-        1445.84765625,
-        982.0136108398438
+        1346.1983642578125,
+        972.5621337890625
       ],
       "template": [
         199.0,
         5.0
       ],
-      "conf": 0.9999992847442627
+      "conf": 0.9999986886978149
     },
     {
       "label": "C",
       "source": [
-        1920.5159912109375,
-        1042.745361328125
+        1815.3724365234375,
+        1030.88671875
       ],
       "template": [
         386.0,
         4.0
       ],
-      "conf": 0.9999133348464966
+      "conf": 0.9994909763336182
     },
     {
       "label": "E",
       "source": [
-        881.4156494140625,
-        1086.988037109375
+        767.7627563476562,
+        1082.8350830078125
       ],
       "template": [
         199.0,
         223.0
       ],
-      "conf": 0.999958872795105
+      "conf": 0.999961256980896
     },
     {
       "label": "F",
       "source": [
-        1433.1151123046875,
-        1189.6082763671875
+        1320.9891357421875,
+        1184.266357421875
       ],
       "template": [
         384.0,
         224.0
       ],
-      "conf": 0.9999929666519165
+      "conf": 0.9999874830245972
     }
   ],
   "homography_available": true,
   "homography_error": null,
   "homography": [
     [
-      -0.21377878475946716,
-      -1.5781603285183063,
-      1672.6510249787289
+      -0.21270349245894443,
+      -1.5303645707636917,
+      1595.712263207559
     ],
     [
-      0.18178564900960814,
-      -1.4280843896010658,
-      1137.0622100694382
+      0.16613866001878397,
+      -1.35812134238784,
+      1095.454514797619
     ],
     [
-      6.673497118793548e-05,
-      -0.002040462128926806,
+      5.959223241116256e-05,
+      -0.002005767027849856,
       1.0
     ]
   ],
   "persons": [
     {
       "id": 1,
-      "conf": 0.9605637192726135,
+      "conf": 0.9435845017433167,
       "xyxy": [
-        1576.6666259765625,
-        876.7628784179688,
-        1729.6705322265625,
-        1241.88037109375
+        855.6111450195312,
+        793.0025634765625,
+        941.0440673828125,
+        1052.5186767578125
       ],
       "foot_point": [
-        1653.1685791015625,
-        1241.88037109375
+        898.3276062011719,
+        1052.5186767578125
       ],
       "template_foot_point": [
-        449.99235120455387,
-        235.9547732973213
+        194.88231217274952,
+        174.68908487095376
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 232.1436538275222
+        "distance_to_center": 143.8072593928901,
+        "distance_to_free_throw_center": 107.95677283401761,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
       "id": 2,
-      "conf": 0.9538511633872986,
+      "conf": 0.94187992811203,
       "xyxy": [
-        1335.05078125,
-        811.0700073242188,
-        1438.564208984375,
-        1084.664794921875
+        971.6573486328125,
+        884.1528930664062,
+        1104.6151123046875,
+        1304.71728515625
       ],
       "foot_point": [
-        1386.8074951171875,
-        1084.664794921875
+        1038.13623046875,
+        1304.71728515625
       ],
       "template_foot_point": [
-        299.4586104608374,
-        142.61924645120223
+        399.84465534007506,
+        324.11886075773026
       ],
       "three_line_status": {
-        "outside": false,
+        "outside": true,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 75.87497726318291
+        "distance_to_center": 279.15053727402375,
+        "distance_to_free_throw_center": 147.87358839895694,
+        "near_free_throw_center": false,
+        "score": 3
       },
-      "outside_three_line": false,
-      "score": 2,
+      "outside_three_line": true,
+      "near_free_throw_center": false,
+      "score": 3,
       "reason": "ok"
     },
     {
       "id": 3,
-      "conf": 0.9466228485107422,
+      "conf": 0.9404059052467346,
       "xyxy": [
-        967.0978393554688,
-        771.442626953125,
-        1046.56201171875,
-        985.450439453125
+        1437.321533203125,
+        789.209716796875,
+        1511.82373046875,
+        1028.396240234375
       ],
       "foot_point": [
-        1006.8299255371094,
-        985.450439453125
+        1474.5726318359375,
+        1028.396240234375
       ],
       "template_foot_point": [
-        103.63326461520239,
-        92.43161256587369
+        299.2825540305314,
+        57.699989820961
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 166.76636613027057,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
       "id": 4,
-      "conf": 0.9301386475563049,
+      "conf": 0.938927173614502,
       "xyxy": [
-        658.9657592773438,
-        781.5559692382812,
-        737.58984375,
-        992.073974609375
+        0.0,
+        858.2286987304688,
+        98.05146026611328,
+        1186.200439453125
       ],
       "foot_point": [
-        698.2778015136719,
-        992.073974609375
+        49.02573013305664,
+        1186.200439453125
       ],
       "template_foot_point": [
-        43.2424920895227,
-        156.2522786944865
+        167.13756798084756,
+        368.6675220481003
       ],
       "three_line_status": {
         "outside": true,
-        "on_line": true,
+        "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 262.7798153244957
+        "distance_to_center": 325.66200573630726,
+        "distance_to_free_throw_center": 190.12224559857972,
+        "near_free_throw_center": false,
+        "score": 3
       },
       "outside_three_line": true,
+      "near_free_throw_center": false,
       "score": 3,
       "reason": "ok"
     },
     {
       "id": 5,
-      "conf": 0.9293109178543091,
+      "conf": 0.9343719482421875,
       "xyxy": [
-        1444.646728515625,
-        809.154541015625,
-        1598.1990966796875,
-        1098.3333740234375
+        1055.6829833984375,
+        762.0369873046875,
+        1150.7137451171875,
+        999.3445434570312
       ],
       "foot_point": [
-        1521.4229125976562,
-        1098.3333740234375
+        1103.1983642578125,
+        999.3445434570312
       ],
       "template_foot_point": [
-        338.67265580261363,
-        135.90822097941142
+        179.2921291807419,
+        83.61764183476976
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
-        "region": "arc_area",
-        "distance_to_center": 83.85179657637518
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 179.469626562442,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
       "id": 6,
-      "conf": 0.9270097017288208,
+      "conf": 0.9268504977226257,
       "xyxy": [
-        0.0,
-        845.2269897460938,
-        125.82086944580078,
-        1160.1103515625
+        333.63470458984375,
+        762.7652587890625,
+        407.4703674316406,
+        978.7009887695312
       ],
       "foot_point": [
-        62.91043472290039,
-        1160.1103515625
+        370.5525360107422,
+        978.7009887695312
       ],
       "template_foot_point": [
-        125.93007731332115,
-        372.89133449389806
+        -20.325032226587144,
+        182.97943599174292
       ],
       "three_line_status": {
         "outside": true,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 347.1089214678667
+        "distance_to_center": 331.6620526482134,
+        "distance_to_free_throw_center": 313.8409371739006,
+        "near_free_throw_center": false,
+        "score": 3
       },
       "outside_three_line": true,
+      "near_free_throw_center": false,
       "score": 3,
       "reason": "ok"
     },
     {
       "id": 7,
-      "conf": 0.9073085188865662,
+      "conf": 0.9209635853767395,
       "xyxy": [
-        1563.2100830078125,
-        782.2796630859375,
-        1628.242919921875,
-        1029.3536376953125
+        1596.5648193359375,
+        821.064697265625,
+        1685.4244384765625,
+        1117.5511474609375
       ],
       "foot_point": [
-        1595.7265014648438,
-        1029.3536376953125
+        1640.99462890625,
+        1117.5511474609375
       ],
       "template_foot_point": [
-        294.7745655010688,
-        43.125993215287814
+        405.32545376363845,
+        130.86952819555646
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
-        "region": "corner_line_area",
-        "distance_to_center": null
+        "region": "arc_area",
+        "distance_to_center": 131.2598523861767,
+        "distance_to_free_throw_center": 147.7774277352914,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
       "id": 8,
-      "conf": 0.9060621857643127,
+      "conf": 0.9050756096839905,
       "xyxy": [
-        786.8619384765625,
-        799.4714965820312,
-        884.6703491210938,
-        1030.914306640625
+        927.3900756835938,
+        779.2048950195312,
+        1049.264892578125,
+        1145.411865234375
       ],
       "foot_point": [
-        835.7661437988281,
-        1030.914306640625
+        988.3274841308594,
+        1145.411865234375
       ],
       "template_foot_point": [
-        126.9042978500633,
-        174.8863701364435
+        296.646328713798,
+        238.95564371388585
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
-        "region": "arc_area",
-        "distance_to_center": 195.81562946959428
+        "region": "free_throw_center_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 15.828666619936492,
+        "near_free_throw_center": true,
+        "score": 1
       },
       "outside_three_line": false,
-      "score": 2,
+      "near_free_throw_center": true,
+      "score": 1,
       "reason": "ok"
     },
     {
       "id": 9,
-      "conf": 0.8786011338233948,
+      "conf": 0.8955093026161194,
       "xyxy": [
-        1194.6463623046875,
-        782.0286254882812,
-        1281.77001953125,
-        1033.8828125
+        2626.498046875,
+        713.3590087890625,
+        2676.759033203125,
+        853.7669677734375
       ],
       "foot_point": [
-        1238.2081909179688,
-        1033.8828125
+        2651.6285400390625,
+        853.7669677734375
       ],
       "template_foot_point": [
-        217.81076720558988,
-        111.31927568181762
+        495.76604768974653,
+        -679.0141278483906
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 926.2294854993687,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
       "id": 10,
-      "conf": 0.8242815732955933,
+      "conf": 0.8805035352706909,
       "xyxy": [
-        2362.91162109375,
-        704.891845703125,
-        2408.287109375,
-        813.1702880859375
+        1827.8143310546875,
+        700.2838745117188,
+        1873.418701171875,
+        815.175048828125
       ],
       "foot_point": [
-        2385.599365234375,
-        813.1702880859375
+        1850.6165161132812,
+        815.175048828125
       ],
       "template_foot_point": [
-        241.2857601956418,
-        -818.8423355718317
+        86.58163559344743,
+        -563.6897516966205
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 813.9719360063624,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
       "id": 11,
-      "conf": 0.8235636949539185,
+      "conf": 0.8613605499267578,
       "xyxy": [
-        1898.864013671875,
-        702.5896606445312,
-        1927.786865234375,
-        811.9221801757812
+        25.706628799438477,
+        786.2005004882812,
+        134.5048828125,
+        1007.6256713867188
       ],
       "foot_point": [
-        1913.325439453125,
-        811.9221801757812
+        80.10575580596924,
+        1007.6256713867188
       ],
       "template_foot_point": [
-        33.49787726509413,
-        -615.079997068136
-      ],
-      "three_line_status": {
-        "outside": true,
-        "on_line": true,
-        "region": "corner_line_area",
-        "distance_to_center": null
-      },
-      "outside_three_line": true,
-      "score": 3,
-      "reason": "ok"
-    },
-    {
-      "id": 12,
-      "conf": 0.7995156645774841,
-      "xyxy": [
-        2504.80517578125,
-        716.5010375976562,
-        2572.26318359375,
-        817.3076171875
-      ],
-      "foot_point": [
-        2538.5341796875,
-        817.3076171875
-      ],
-      "template_foot_point": [
-        320.85853863345966,
-        -865.6785400666314
-      ],
-      "three_line_status": {
-        "outside": false,
-        "on_line": false,
-        "region": "corner_line_area",
-        "distance_to_center": null
-      },
-      "outside_three_line": false,
-      "score": 2,
-      "reason": "ok"
-    },
-    {
-      "id": 13,
-      "conf": 0.7731310725212097,
-      "xyxy": [
-        2294.388916015625,
-        710.1410522460938,
-        2319.87890625,
-        809.623779296875
-      ],
-      "foot_point": [
-        2307.1339111328125,
-        809.623779296875
-      ],
-      "template_foot_point": [
-        197.3362775466764,
-        -803.6600434971582
-      ],
-      "three_line_status": {
-        "outside": false,
-        "on_line": false,
-        "region": "corner_line_area",
-        "distance_to_center": null
-      },
-      "outside_three_line": false,
-      "score": 2,
-      "reason": "ok"
-    },
-    {
-      "id": 14,
-      "conf": 0.7688933610916138,
-      "xyxy": [
-        2471.939208984375,
-        703.9314575195312,
-        2513.9052734375,
-        816.5496826171875
-      ],
-      "foot_point": [
-        2492.9222412109375,
-        816.5496826171875
-      ],
-      "template_foot_point": [
-        297.9932807367008,
-        -848.659941620975
-      ],
-      "three_line_status": {
-        "outside": false,
-        "on_line": false,
-        "region": "corner_line_area",
-        "distance_to_center": null
-      },
-      "outside_three_line": false,
-      "score": 2,
-      "reason": "ok"
-    },
-    {
-      "id": 15,
-      "conf": 0.7041603326797485,
-      "xyxy": [
-        2579.8212890625,
-        699.4757080078125,
-        2613.76904296875,
-        804.7507934570312
-      ],
-      "foot_point": [
-        2596.795166015625,
-        804.7507934570312
-      ],
-      "template_foot_point": [
-        325.35276581638675,
-        -981.022090301891
-      ],
-      "three_line_status": {
-        "outside": false,
-        "on_line": false,
-        "region": "corner_line_area",
-        "distance_to_center": null
-      },
-      "outside_three_line": false,
-      "score": 2,
-      "reason": "ok"
-    },
-    {
-      "id": 16,
-      "conf": 0.6657981276512146,
-      "xyxy": [
-        2410.645263671875,
-        701.0706787109375,
-        2448.035888671875,
-        808.5278930664062
-      ],
-      "foot_point": [
-        2429.340576171875,
-        808.5278930664062
-      ],
-      "template_foot_point": [
-        251.56865699270725,
-        -869.5511984074753
-      ],
-      "three_line_status": {
-        "outside": false,
-        "on_line": false,
-        "region": "corner_line_area",
-        "distance_to_center": null
-      },
-      "outside_three_line": false,
-      "score": 2,
-      "reason": "ok"
-    },
-    {
-      "id": 17,
-      "conf": 0.6591302156448364,
-      "xyxy": [
-        168.3893585205078,
-        781.0994262695312,
-        273.5517883300781,
-        1002.58984375
-      ],
-      "foot_point": [
-        220.97057342529297,
-        1002.58984375
-      ],
-      "template_foot_point": [
-        -41.86681007812388,
-        246.8975565077917
+        -36.051628124469204,
+        255.55214781650156
       ],
       "three_line_status": {
         "outside": true,
         "on_line": false,
         "region": "arc_area",
-        "distance_to_center": 377.79883436546294
+        "distance_to_center": 376.94064548766613,
+        "distance_to_free_throw_center": 328.3376328946441,
+        "near_free_throw_center": false,
+        "score": 3
       },
       "outside_three_line": true,
+      "near_free_throw_center": false,
       "score": 3,
       "reason": "ok"
     },
     {
-      "id": 18,
-      "conf": 0.6350529193878174,
+      "id": 12,
+      "conf": 0.8597628474235535,
       "xyxy": [
-        2559.789306640625,
-        701.086181640625,
-        2590.431640625,
-        803.3082275390625
+        2263.21337890625,
+        693.9503784179688,
+        2304.848388671875,
+        798.0487670898438
       ],
       "foot_point": [
-        2575.1104736328125,
-        803.3082275390625
+        2284.0308837890625,
+        798.0487670898438
       ],
       "template_foot_point": [
-        311.60166504849747,
-        -980.1363407954349
+        239.81313500278645,
+        -841.76108781334
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1067.229277654544,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     },
     {
-      "id": 19,
-      "conf": 0.5397855639457703,
+      "id": 13,
+      "conf": 0.8510364890098572,
       "xyxy": [
-        2321.14453125,
-        711.672607421875,
-        2357.356689453125,
-        796.410400390625
+        2042.473876953125,
+        710.8884887695312,
+        2085.0234375,
+        817.1576538085938
       ],
       "foot_point": [
-        2339.2506103515625,
-        796.410400390625
+        2063.7486572265625,
+        817.1576538085938
       ],
       "template_foot_point": [
-        179.75699820463785,
-        -906.2295246082906
+        181.77387389769004,
+        -636.6189517178428
       ],
       "three_line_status": {
         "outside": false,
         "on_line": false,
         "region": "corner_line_area",
-        "distance_to_center": null
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 867.7441885708647,
+        "near_free_throw_center": false,
+        "score": 2
       },
       "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 14,
+      "conf": 0.84383225440979,
+      "xyxy": [
+        1661.1600341796875,
+        856.0540161132812,
+        1785.4896240234375,
+        1091.390625
+      ],
+      "foot_point": [
+        1723.3248291015625,
+        1091.390625
+      ],
+      "template_foot_point": [
+        406.0007345978547,
+        92.48664512155486
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 175.02851152002577,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 15,
+      "conf": 0.8410707712173462,
+      "xyxy": [
+        1974.1314697265625,
+        709.239990234375,
+        2024.7486572265625,
+        838.16259765625
+      ],
+      "foot_point": [
+        1999.4400634765625,
+        838.16259765625
+      ],
+      "template_foot_point": [
+        199.7658469681214,
+        -514.7834116945596
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 744.6179363005396,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 16,
+      "conf": 0.8251118063926697,
+      "xyxy": [
+        2123.53173828125,
+        704.262451171875,
+        2156.26123046875,
+        795.3845825195312
+      ],
+      "foot_point": [
+        2139.896484375,
+        795.3845825195312
+      ],
+      "template_foot_point": [
+        163.90305141438273,
+        -792.4702147513233
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1024.6074466314133,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 17,
+      "conf": 0.8170475363731384,
+      "xyxy": [
+        2303.936279296875,
+        709.1126708984375,
+        2355.829345703125,
+        825.808837890625
+      ],
+      "foot_point": [
+        2329.8828125,
+        825.808837890625
+      ],
+      "template_foot_point": [
+        316.2101764765936,
+        -697.5141142308856
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 922.1145494113103,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 18,
+      "conf": 0.789568305015564,
+      "xyxy": [
+        1259.8758544921875,
+        723.2052001953125,
+        1301.757568359375,
+        842.7197265625
+      ],
+      "foot_point": [
+        1280.8167114257812,
+        842.7197265625
+      ],
+      "template_foot_point": [
+        -54.74129729214862,
+        -266.6764123288068
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 600.3340447300786,
+        "near_free_throw_center": false,
+        "score": 3
+      },
+      "outside_three_line": true,
+      "near_free_throw_center": false,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 19,
+      "conf": 0.773567259311676,
+      "xyxy": [
+        2352.49658203125,
+        707.8148803710938,
+        2401.622802734375,
+        808.7300415039062
+      ],
+      "foot_point": [
+        2377.0596923828125,
+        808.7300415039062
+      ],
+      "template_foot_point": [
+        307.0920396289941,
+        -815.9150304904819
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1040.2927620864912,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 20,
+      "conf": 0.7646587491035461,
+      "xyxy": [
+        2510.194580078125,
+        696.658935546875,
+        2560.10546875,
+        785.7329711914062
+      ],
+      "foot_point": [
+        2535.1500244140625,
+        785.7329711914062
+      ],
+      "template_foot_point": [
+        343.5474967696958,
+        -1057.8887094940994
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1283.2236637045594,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 21,
+      "conf": 0.7001379132270813,
+      "xyxy": [
+        2480.916259765625,
+        701.5194702148438,
+        2519.5537109375,
+        804.3280639648438
+      ],
+      "foot_point": [
+        2500.2349853515625,
+        804.3280639648438
+      ],
+      "template_foot_point": [
+        359.70617532665494,
+        -901.2814592539487
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1127.63932002926,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 22,
+      "conf": 0.5960440039634705,
+      "xyxy": [
+        2340.987548828125,
+        699.4362182617188,
+        2375.3115234375,
+        798.0385131835938
+      ],
+      "foot_point": [
+        2358.1495361328125,
+        798.0385131835938
+      ],
+      "template_foot_point": [
+        276.3527306660973,
+        -876.6695208427399
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1101.0141872637007,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 23,
+      "conf": 0.5845482349395752,
+      "xyxy": [
+        2405.617919921875,
+        689.0580444335938,
+        2438.40869140625,
+        785.9705810546875
+      ],
+      "foot_point": [
+        2422.0133056640625,
+        785.9705810546875
+      ],
+      "template_foot_point": [
+        282.963297789455,
+        -995.9745582620626
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1220.2496620283453,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 24,
+      "conf": 0.5214893817901611,
+      "xyxy": [
+        2464.764892578125,
+        701.5155639648438,
+        2518.853515625,
+        803.899169921875
+      ],
+      "foot_point": [
+        2491.8092041015625,
+        803.899169921875
+      ],
+      "template_foot_point": [
+        354.70613533717165,
+        -900.215456283255
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null,
+        "distance_to_free_throw_center": 1126.2805027233949,
+        "near_free_throw_center": false,
+        "score": 2
+      },
+      "outside_three_line": false,
+      "near_free_throw_center": false,
       "score": 2,
       "reason": "ok"
     }
   ],
   "source_json_path": "python/testImgs/right_detections.json",
-  "score_visualization_path": "python/testImgs/right_persons_kps_score_vis.png"
+  "score_visualization_path": "python/testImgs/right_persons_kps_score_vis.png",
+  "template_overlay_path": "python/testImgs/right_persons_kps_score_vis_template_overlay.png"
 }
