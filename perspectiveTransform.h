@@ -27,7 +27,7 @@ struct Point2i {
 struct Point2f {
     float x, y, score;
     Point2f() : x(0.0f), y(0.0f), score(0.0f) {}
-    Point2f(float x, float y) : x(x), y(y), score(0.0f) {}
+    Point2f(float x, float y) : x(x), y(y), score(1.0f) {}
     Point2f(float x, float y, float score) : x(x), y(y), score(score) {}
 };
 

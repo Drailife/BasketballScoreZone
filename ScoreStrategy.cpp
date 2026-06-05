@@ -35,8 +35,7 @@ bool isMissingPoint(const Point2f& point) {
 }
 
 bool shouldSkipByScore(const Point2f& point) {
-    // score == 0 表示调用方没有传置信度；只有明确给出低置信度时才过滤。
-    return point.score > 0.0f && point.score < kMinKeyPointScore;
+    return point.score < kMinKeyPointScore;
 }
 
 ScoreResult defaultTwoPointResult(const Point2f& imagePoint,
