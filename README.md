@@ -14,20 +14,25 @@
 
 ## 代码结构
 
+当前仓库已经整理为“C++ 主流程 + Python 数据生成/可视化 + 测试文件”三部分：
+
 ```
-main.cpp  # 调用示例
+BasketballCourtMapper.cpp / BasketballCourtMapper.h   # 场地映射主入口
+ScoreStrategy.cpp / ScoreStrategy.h                   # 三分线判断逻辑
+perspectiveTransform.cpp / perspectiveTransform.h     # 单应性矩阵和透视变换
+main.cpp                                              # C++ 调用示例
 
-# 篮球场地数据转换类：模板图，预设场地线、点，归一化数据处理：
-BasketballCourtMapper.cpp  
-BasketballCourtMapper.h 
+test/                                                 # C++ 测试入口
+    ├── test_ScoreStrategy.cpp
+    └── test_perspectiveTrans.cpp
 
-# 数学计算核心函数类：单应性矩阵计算，透视变换计算，矩阵运算，无cv：
-perspectiveTransform.cpp  
-perspectiveTransform.h
+strategy/                                             # JSON 生成和测试结果
+    ├── GenerateDetData.py
+    ├── ScoreStrategy.py
+    ├── test_detections.json
+    └── test_detections_score.json
 
-# python代码库参考：模板图、cv打点画图、一致性验证：
-python/
-
+python/                                               # OpenCV 可视化与辅助脚本
 ```
 
 ## 使用方法
@@ -109,11 +114,25 @@ struct MappingResult {
 
 ## 编译运行
 
+仓库当前使用 CMake 编译：
+
 ```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
-./bin/demoAnalysis  # 运行程序
+cmake -S . -B build
+cmake --build build -j
+```
+
+运行可执行文件：
+
+```bash
+./build/test_score
+./build/test_perspectiveTrans
+./build/demo
+```
+
+如果要清理生成文件：
+
+```bash
+rm -rf build
 ```
 
 ## 错误代码表
@@ -156,3 +175,68 @@ cmake --build .
 [详细算法文档](https://doc.weixin.qq.com/doc/w3_AWkA7QaoAF0CNJJaBiKWiSzCLPhhP?scode=ADgAsAdWAA4ZWdFohcAWkA7QaoAF0)
 
 
+
+
+## 三分线判定与可视化
+
+当前仓库新增了 `ScoreStrategy` 的三分线判定流程，以及 `test/test_ScoreStrategy.cpp` 的 JSON 回放测试。
+
+### JSON 生成来源
+
+`strategy/test_detections_score.json` 由 `strategy/GenerateDetData.py` 和 `strategy/ScoreStrategy.py` 生成：
+- `strategy/GenerateDetData.py` 负责读取检测结果并整理成统一的 JSON 结构
+- `strategy/ScoreStrategy.py` 负责三分线可视化、关键点判断与最终结果输出
+
+如果需要重新生成测试 JSON，请先确保这两个脚本使用的是同一份输入图像和同一套模型输出。
+
+### 输入数据
+
+测试文件使用 `strategy/test_detections_score.json`，其中包含：
+- `valid_keypoints`: 三分线 6 个关键点 A-F
+- `persons`: 检测到的人物框、脚点和置信度
+- `image_width` / `image_height`: 原图尺寸
+
+### 判定逻辑
+
+1. 先读取 A-F 三分线关键点。
+2. 构建单应性矩阵。
+3. 再读取每个人的脚点。
+4. 对每个人的脚点调用 `ScoreStrategy::judgePlayerPoint`。
+5. 输出该点位是三分线内还是三分线外，结果为 2 分或 3 分。
+
+### 编译方式
+
+项目根目录使用 CMake：
+
+```bash
+cmake -S . -B build
+cmake --build build -j
+./build/test_score
+```
+
+如需运行主程序：
+
+```bash
+./build/demo
+```
+
+清理生成文件：
+
+```bash
+rm -rf build
+```
+
+### 注意事项
+
+- `Point2f` 当前结构包含 `x`、`y`、`score` 三个字段。
+- 构建单应性矩阵时会自动忽略 `score < 0.5` 的关键点。
+- 剔除后若有效点少于 4 个，`ScoreStrategy` 会返回 `false`。
+
+### 目录说明
+
+- `BasketballCourtMapper.cpp/.h`：主映射入口
+- `ScoreStrategy.cpp/.h`：三分线判断逻辑
+- `perspectiveTransform.cpp/.h`：单应性矩阵和透视变换
+- `test/`：测试入口文件
+- `strategy/`：JSON 生成脚本、测试数据和可视化结果
+- `python/`：Python 可视化与辅助脚本

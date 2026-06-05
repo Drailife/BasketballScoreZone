@@ -1,0 +1,753 @@
+{
+  "image_path": "strategy/test.png",
+  "image_width": 2381,
+  "image_height": 1337,
+  "visualization_path": "strategy/test_persons_kps.png",
+  "keypoint_conf_threshold": 0.5,
+  "valid_keypoint_count": 6,
+  "valid_keypoints": [
+    {
+      "label": "A",
+      "source": [
+        1120.376953125,
+        559.7340087890625
+      ],
+      "template": [
+        40.0,
+        4.0
+      ],
+      "conf": 0.9996931552886963
+    },
+    {
+      "label": "B",
+      "source": [
+        917.7946166992188,
+        591.7699584960938
+      ],
+      "template": [
+        199.0,
+        5.0
+      ],
+      "conf": 0.9999743700027466
+    },
+    {
+      "label": "C",
+      "source": [
+        660.2696533203125,
+        631.88525390625
+      ],
+      "template": [
+        386.0,
+        4.0
+      ],
+      "conf": 0.9999963045120239
+    },
+    {
+      "label": "D",
+      "source": [
+        205.07383728027344,
+        700.25390625
+      ],
+      "template": [
+        543.0,
+        2.0
+      ],
+      "conf": 0.9986483454704285
+    },
+    {
+      "label": "E",
+      "source": [
+        1299.6556396484375,
+        647.9805908203125
+      ],
+      "template": [
+        199.0,
+        223.0
+      ],
+      "conf": 0.9986080527305603
+    },
+    {
+      "label": "F",
+      "source": [
+        1070.1497802734375,
+        711.572265625
+      ],
+      "template": [
+        384.0,
+        224.0
+      ],
+      "conf": 0.9999275207519531
+    }
+  ],
+  "homography_available": true,
+  "homography_error": null,
+  "homography": [
+    [
+      0.6898667950801614,
+      -4.700198587005168,
+      1819.1179911665188
+    ],
+    [
+      -0.48230315890369024,
+      -3.168911533093811,
+      2312.333895333043
+    ],
+    [
+      0.000501628179411377,
+      -0.0050546363067340075,
+      1.0
+    ]
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "conf": 0.9462649822235107,
+      "xyxy": [
+        1186.1212158203125,
+        577.3154907226562,
+        1333.5013427734375,
+        854.6055908203125
+      ],
+      "foot_point": [
+        1259.811279296875,
+        854.6055908203125
+      ],
+      "template_foot_point": [
+        494.312827667789,
+        373.3388509251783
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 367.7155824344266
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 2,
+      "conf": 0.9342904686927795,
+      "xyxy": [
+        1603.362060546875,
+        518.9451904296875,
+        1694.3194580078125,
+        736.9547119140625
+      ],
+      "foot_point": [
+        1648.8407592773438,
+        736.9547119140625
+      ],
+      "template_foot_point": [
+        267.25653621476675,
+        431.12769187158113
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 364.5943499163573
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 3,
+      "conf": 0.9307335019111633,
+      "xyxy": [
+        980.3552856445312,
+        498.5852355957031,
+        1077.6129150390625,
+        676.249267578125
+      ],
+      "foot_point": [
+        1028.9841003417969,
+        676.249267578125
+      ],
+      "template_foot_point": [
+        341.4914755451414,
+        171.88112739844206
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 116.37255891132514
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 4,
+      "conf": 0.9287616014480591,
+      "xyxy": [
+        397.2852783203125,
+        501.2488708496094,
+        479.04327392578125,
+        704.74365234375
+      ],
+      "foot_point": [
+        438.1642761230469,
+        704.74365234375
+      ],
+      "template_foot_point": [
+        508.4649333100329,
+        56.46467948989653
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 5,
+      "conf": 0.9238728880882263,
+      "xyxy": [
+        1807.271484375,
+        530.846435546875,
+        1923.720703125,
+        731.9276733398438
+      ],
+      "foot_point": [
+        1865.49609375,
+        731.9276733398438
+      ],
+      "template_foot_point": [
+        189.44070115956043,
+        514.1131727335026
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 458.1237109056207
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 6,
+      "conf": 0.9181045293807983,
+      "xyxy": [
+        1700.5257568359375,
+        449.4103088378906,
+        1765.3173828125,
+        604.2196044921875
+      ],
+      "foot_point": [
+        1732.9215698242188,
+        604.2196044921875
+      ],
+      "template_foot_point": [
+        -147.4061221087379,
+        369.8242307595337
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 532.2572769004652
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 7,
+      "conf": 0.8991016745567322,
+      "xyxy": [
+        1140.3428955078125,
+        448.91168212890625,
+        1218.0875244140625,
+        565.8555908203125
+      ],
+      "foot_point": [
+        1179.2152099609375,
+        565.8555908203125
+      ],
+      "template_foot_point": [
+        21.293410663669295,
+        39.05804087096026
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 8,
+      "conf": 0.8933432102203369,
+      "xyxy": [
+        857.5638427734375,
+        477.6461486816406,
+        919.0620727539062,
+        621.4165649414062
+      ],
+      "foot_point": [
+        888.3129577636719,
+        621.4165649414062
+      ],
+      "template_foot_point": [
+        288.3310445152155,
+        50.321318616983696
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 9,
+      "conf": 0.8727095127105713,
+      "xyxy": [
+        1849.50146484375,
+        450.41497802734375,
+        1915.8740234375,
+        558.6474609375
+      ],
+      "foot_point": [
+        1882.687744140625,
+        558.6474609375
+      ],
+      "template_foot_point": [
+        -559.6946125788086,
+        416.21256517031514
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 919.014854964281
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 10,
+      "conf": 0.8545376062393188,
+      "xyxy": [
+        648.151611328125,
+        465.9726867675781,
+        720.1708984375,
+        671.4595336914062
+      ],
+      "foot_point": [
+        684.1612548828125,
+        671.4595336914062
+      ],
+      "template_foot_point": [
+        421.7376605908706,
+        70.91665069558648
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 11,
+      "conf": 0.8538060188293457,
+      "xyxy": [
+        1790.9013671875,
+        427.00762939453125,
+        1829.3958740234375,
+        504.6695861816406
+      ],
+      "foot_point": [
+        1810.1486206054688,
+        504.6695861816406
+      ],
+      "template_foot_point": [
+        -1082.3339787114392,
+        248.80986166385327
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 1384.7844738817641
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 12,
+      "conf": 0.7873346209526062,
+      "xyxy": [
+        653.8396606445312,
+        523.537353515625,
+        802.4218139648438,
+        747.9052124023438
+      ],
+      "foot_point": [
+        728.1307373046875,
+        747.9052124023438
+      ],
+      "template_foot_point": [
+        494.3286224984677,
+        169.303502328605
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 227.93841851921545
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 13,
+      "conf": 0.7867243885993958,
+      "xyxy": [
+        1281.057373046875,
+        469.6427001953125,
+        1337.3604736328125,
+        617.119140625
+      ],
+      "foot_point": [
+        1309.2089233398438,
+        617.119140625
+      ],
+      "template_foot_point": [
+        121.897712795896,
+        187.81761077147934
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 207.26131395429186
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 14,
+      "conf": 0.766671895980835,
+      "xyxy": [
+        2301.114990234375,
+        433.79180908203125,
+        2336.656005859375,
+        521.537841796875
+      ],
+      "foot_point": [
+        2318.885498046875,
+        521.537841796875
+      ],
+      "template_foot_point": [
+        -2045.6207850952724,
+        970.0049929348307
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 2504.4723521528986
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 15,
+      "conf": 0.7603127360343933,
+      "xyxy": [
+        1374.408203125,
+        456.7400207519531,
+        1418.383056640625,
+        603.2196044921875
+      ],
+      "foot_point": [
+        1396.3956298828125,
+        603.2196044921875
+      ],
+      "template_foot_point": [
+        39.1573319029545,
+        202.2133035492176
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 285.27439873020916
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 16,
+      "conf": 0.742701530456543,
+      "xyxy": [
+        1566.2784423828125,
+        424.2334899902344,
+        1595.3011474609375,
+        497.6809387207031
+      ],
+      "foot_point": [
+        1580.789794921875,
+        497.6809387207031
+      ],
+      "template_foot_point": [
+        -789.4152753795161,
+        37.63057076174808
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 17,
+      "conf": 0.7420520186424255,
+      "xyxy": [
+        1916.582763671875,
+        440.7740173339844,
+        1968.5771484375,
+        607.7955322265625
+      ],
+      "foot_point": [
+        1942.5799560546875,
+        607.7955322265625
+      ],
+      "template_foot_point": [
+        -275.549546945811,
+        501.60564338708883
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 713.4810420625066
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 18,
+      "conf": 0.6306041479110718,
+      "xyxy": [
+        2265.6708984375,
+        440.3603820800781,
+        2296.728515625,
+        519.4917602539062
+      ],
+      "foot_point": [
+        2281.19970703125,
+        519.4917602539062
+      ],
+      "template_foot_point": [
+        -1975.2283728049385,
+        901.5456821428023
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 2414.4425092381744
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 19,
+      "conf": 0.620861291885376,
+      "xyxy": [
+        2096.65625,
+        460.92547607421875,
+        2137.76611328125,
+        573.5856323242188
+      ],
+      "foot_point": [
+        2117.211181640625,
+        573.5856323242188
+      ],
+      "template_foot_point": [
+        -697.2474477425247,
+        628.8068390260388
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 1136.205538959319
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 20,
+      "conf": 0.6188557744026184,
+      "xyxy": [
+        1991.841796875,
+        454.82958984375,
+        2043.4652099609375,
+        560.921142578125
+      ],
+      "foot_point": [
+        2017.6535034179688,
+        560.921142578125
+      ],
+      "template_foot_point": [
+        -698.0453181447443,
+        532.4683097885305
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 1092.5322244665836
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 21,
+      "conf": 0.6175413131713867,
+      "xyxy": [
+        2229.986328125,
+        435.1208190917969,
+        2264.70703125,
+        516.2721557617188
+      ],
+      "foot_point": [
+        2247.3466796875,
+        516.2721557617188
+      ],
+      "template_foot_point": [
+        -1955.281329727122,
+        845.2078828245066
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 2376.702200766972
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 22,
+      "conf": 0.6007426977157593,
+      "xyxy": [
+        1140.8118896484375,
+        447.42315673828125,
+        1192.8272705078125,
+        566.1953735351562
+      ],
+      "foot_point": [
+        1166.819580078125,
+        566.1953735351562
+      ],
+      "template_foot_point": [
+        29.110573335596534,
+        34.97559876745765
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": true,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 23,
+      "conf": 0.5935909152030945,
+      "xyxy": [
+        1610.1715087890625,
+        429.0457763671875,
+        1663.912841796875,
+        536.3225708007812
+      ],
+      "foot_point": [
+        1637.0421752929688,
+        536.3225708007812
+      ],
+      "template_foot_point": [
+        -480.63670552149654,
+        198.68464072962774
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 782.2533555563933
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 24,
+      "conf": 0.5144391059875488,
+      "xyxy": [
+        1735.014892578125,
+        427.8495178222656,
+        1767.392333984375,
+        525.8058471679688
+      ],
+      "foot_point": [
+        1751.20361328125,
+        525.8058471679688
+      ],
+      "template_foot_point": [
+        -713.230190911018,
+        254.72638414100464
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 1021.0838934987894
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    }
+  ],
+  "source_json_path": "strategy/test_detections.json",
+  "score_visualization_path": "strategy/test_persons_kps_score_vis.png"
+}

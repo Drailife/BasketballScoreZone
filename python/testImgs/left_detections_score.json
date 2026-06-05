@@ -1,0 +1,429 @@
+{
+  "image_path": "python/testImgs/left.png",
+  "image_width": 2857,
+  "image_height": 1592,
+  "visualization_path": "python/testImgs/left_persons_kps.png",
+  "keypoint_conf_threshold": 0.5,
+  "valid_keypoint_count": 6,
+  "valid_keypoints": [
+    {
+      "label": "A",
+      "source": [
+        1468.40283203125,
+        927.8621826171875
+      ],
+      "template": [
+        40.0,
+        4.0
+      ],
+      "conf": 0.9996199607849121
+    },
+    {
+      "label": "B",
+      "source": [
+        1166.8360595703125,
+        974.352294921875
+      ],
+      "template": [
+        199.0,
+        5.0
+      ],
+      "conf": 0.9999792575836182
+    },
+    {
+      "label": "C",
+      "source": [
+        767.98779296875,
+        1032.1986083984375
+      ],
+      "template": [
+        386.0,
+        4.0
+      ],
+      "conf": 0.9999990463256836
+    },
+    {
+      "label": "D",
+      "source": [
+        120.78417205810547,
+        1132.5889892578125
+      ],
+      "template": [
+        543.0,
+        2.0
+      ],
+      "conf": 0.9998076558113098
+    },
+    {
+      "label": "E",
+      "source": [
+        1648.4254150390625,
+        1058.8653564453125
+      ],
+      "template": [
+        199.0,
+        223.0
+      ],
+      "conf": 0.998656153678894
+    },
+    {
+      "label": "F",
+      "source": [
+        1258.446044921875,
+        1151.28369140625
+      ],
+      "template": [
+        384.0,
+        224.0
+      ],
+      "conf": 0.9999481439590454
+    }
+  ],
+  "homography_available": true,
+  "homography_error": null,
+  "homography": [
+    [
+      0.3700286750088558,
+      -2.2086089735600116,
+      1473.737873963557
+    ],
+    [
+      -0.27061234687661745,
+      -1.8063471867030216,
+      2071.0423378203423
+    ],
+    [
+      0.0002338860276561222,
+      -0.002495927207205095,
+      1.0
+    ]
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "conf": 0.9511424899101257,
+      "xyxy": [
+        2370.004150390625,
+        919.1654663085938,
+        2516.569091796875,
+        1241.9725341796875
+      ],
+      "foot_point": [
+        2443.28662109375,
+        1241.9725341796875
+      ],
+      "template_foot_point": [
+        238.94421474484164,
+        545.3824558034602
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 480.8791306431728
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 2,
+      "conf": 0.9501743912696838,
+      "xyxy": [
+        897.2833862304688,
+        824.05712890625,
+        1023.3928833007812,
+        1058.35888671875
+      ],
+      "foot_point": [
+        960.338134765625,
+        1058.35888671875
+      ],
+      "template_foot_point": [
+        358.79932295068284,
+        70.99664376032233
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 3,
+      "conf": 0.9485753178596497,
+      "xyxy": [
+        1094.46875,
+        935.8432006835938,
+        1277.0130615234375,
+        1192.1783447265625
+      ],
+      "foot_point": [
+        1185.7409057617188,
+        1192.1783447265625
+      ],
+      "template_foot_point": [
+        424.2924367656637,
+        237.49089256098347
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 216.50373256834715
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 4,
+      "conf": 0.935351550579071,
+      "xyxy": [
+        433.8119201660156,
+        867.5520629882812,
+        532.9780883789062,
+        1177.0303955078125
+      ],
+      "foot_point": [
+        483.39500427246094,
+        1177.0303955078125
+      ],
+      "template_foot_point": [
+        518.9785432360978,
+        101.8762176902921
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 5,
+      "conf": 0.8816357254981995,
+      "xyxy": [
+        1751.667236328125,
+        848.4515991210938,
+        1812.2607421875,
+        1044.7376708984375
+      ],
+      "foot_point": [
+        1781.9639892578125,
+        1044.7376708984375
+      ],
+      "template_foot_point": [
+        146.37175719336716,
+        250.53316315392084
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 233.1448149478705
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 6,
+      "conf": 0.8561810851097107,
+      "xyxy": [
+        2348.941162109375,
+        868.076171875,
+        2414.1298828125,
+        1094.386474609375
+      ],
+      "foot_point": [
+        2381.5355224609375,
+        1094.386474609375
+      ],
+      "template_foot_point": [
+        52.87136883088094,
+        468.51596088030504
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 466.3278621736639
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 7,
+      "conf": 0.8489105701446533,
+      "xyxy": [
+        1355.8511962890625,
+        833.919677734375,
+        1442.67529296875,
+        1042.9764404296875
+      ],
+      "foot_point": [
+        1399.2632446289062,
+        1042.9764404296875
+      ],
+      "template_foot_point": [
+        244.54547873896482,
+        150.160165228018
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 94.77219338607067
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 8,
+      "conf": 0.8446322679519653,
+      "xyxy": [
+        1507.25244140625,
+        907.1597290039062,
+        1590.458251953125,
+        1033.6754150390625
+      ],
+      "foot_point": [
+        1548.8553466796875,
+        1033.6754150390625
+      ],
+      "template_foot_point": [
+        193.90784115581087,
+        176.78382210574105
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 146.02132470693417
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 9,
+      "conf": 0.8367816209793091,
+      "xyxy": [
+        1823.2371826171875,
+        863.2341918945312,
+        1891.1190185546875,
+        1097.6002197265625
+      ],
+      "foot_point": [
+        1857.1781005859375,
+        1097.6002197265625
+      ],
+      "template_foot_point": [
+        201.6781211781056,
+        317.3399000541676
+      ],
+      "three_line_status": {
+        "outside": true,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 265.3710240334315
+      },
+      "outside_three_line": true,
+      "score": 3,
+      "reason": "ok"
+    },
+    {
+      "id": 10,
+      "conf": 0.8098119497299194,
+      "xyxy": [
+        1439.538330078125,
+        890.7230224609375,
+        1520.7774658203125,
+        1037.4774169921875
+      ],
+      "foot_point": [
+        1480.1578979492188,
+        1037.4774169921875
+      ],
+      "template_foot_point": [
+        217.12182573190174,
+        163.72104507501055
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "arc_area",
+        "distance_to_center": 121.18661670964481
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 11,
+      "conf": 0.6592841744422913,
+      "xyxy": [
+        1248.560791015625,
+        788.2086791992188,
+        1307.306396484375,
+        914.1465454101562
+      ],
+      "foot_point": [
+        1277.93359375,
+        914.1465454101562
+      ],
+      "template_foot_point": [
+        73.65264465155515,
+        -75.24956098390174
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    },
+    {
+      "id": 12,
+      "conf": 0.6574636697769165,
+      "xyxy": [
+        989.74462890625,
+        796.3638305664062,
+        1040.06689453125,
+        969.4295043945312
+      ],
+      "foot_point": [
+        1014.90576171875,
+        969.4295043945312
+      ],
+      "template_foot_point": [
+        246.824110770374,
+        -38.29133207091914
+      ],
+      "three_line_status": {
+        "outside": false,
+        "on_line": false,
+        "region": "corner_line_area",
+        "distance_to_center": null
+      },
+      "outside_three_line": false,
+      "score": 2,
+      "reason": "ok"
+    }
+  ],
+  "source_json_path": "python/testImgs/left_detections.json",
+  "score_visualization_path": "python/testImgs/left_persons_kps_score_vis.png"
+}
