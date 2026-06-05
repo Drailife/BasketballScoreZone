@@ -7,7 +7,9 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-
+TEMPLATE_IMG_PATH = "python/base/base_standard_annotated.png"
+TEMPLATE_WIDTH = 581
+TEMPLATE_HEIGHT = 345
 KEYPOINT_LABELS = ("A", "B", "C", "D", "E", "F")
 TEMPLATE_KEYPOINTS = (
     (40.0, 4.0),
@@ -29,15 +31,20 @@ THREE_LINE_RIGHT_X = 543.235
 THREE_LINE_CORNER_Y = 117.3
 THREE_LINE_RADIUS = 255.0
 THREE_LINE_EPS = 10.0
+FREE_THROW_CENTER = (290.7905, 224.250)
+FREE_THROW_ONE_POINT_RADIUS = 25.0
 
 COLOR_TWO_POINT = (0, 180, 0)
 COLOR_THREE_POINT = (0, 0, 255)
+COLOR_ONE_POINT = (255, 80, 0)
 COLOR_DEFAULT_SCORE = (0, 165, 255)
 COLOR_TEXT_BG = (255, 255, 255)
 
 FONT_SCALE = 0.65
 FONT_THICKNESS = 2
 LABEL_PADDING = 5
+DEFAULT_TEMPLATE_OVERLAY_ALPHA = 0.55
+TEMPLATE_WHITE_THRESHOLD = 245
 
 Point = Tuple[float, float]
 PersonDetection = Dict[str, Any]
@@ -91,12 +98,28 @@ def compute_three_point_status(
     eps: float = THREE_LINE_EPS,
 ) -> Dict[str, Any]:
     """
-    判断模板图点位是否位于三分线外。
+    判断模板图点位对应的计分状态。
 
-    outside=True 表示三分线外，按 3 分处理；否则按 2 分处理。
+    罚球点附近按 1 分处理；三分线外按 3 分处理；其余按 2 分处理。
     """
     x, y = template_point
     cx, cy = THREE_LINE_CENTER
+    free_throw_distance = math.hypot(
+        x - FREE_THROW_CENTER[0],
+        y - FREE_THROW_CENTER[1],
+    )
+
+    if free_throw_distance <= FREE_THROW_ONE_POINT_RADIUS:
+        return {
+            "outside": False,
+            "on_line": False,
+            "region": "free_throw_center_area",
+            "distance_to_center": None,
+            "distance_to_free_throw_center": free_throw_distance,
+            "near_free_throw_center": True,
+            "score": 1,
+        }
+
     on_line = False
     distance_to_center = None
 
@@ -126,6 +149,9 @@ def compute_three_point_status(
         "on_line": bool(on_line),
         "region": region,
         "distance_to_center": distance_to_center,
+        "distance_to_free_throw_center": free_throw_distance,
+        "near_free_throw_center": False,
+        "score": 3 if outside else 2,
     }
 
 
@@ -156,6 +182,15 @@ def default_visualization_output_path(image_path: str, json_path: str) -> str:
     return str(path.with_name(f"{path.stem}_score_vis.png"))
 
 
+def default_template_overlay_output_path(score_image_path: str, json_path: str) -> str:
+    if score_image_path:
+        path = Path(score_image_path)
+        return str(path.with_name(f"{path.stem}_template_overlay{path.suffix}"))
+
+    path = Path(json_path)
+    return str(path.with_name(f"{path.stem}_template_overlay.png"))
+
+
 def resolve_image_path(image_path: Optional[str], json_path: str) -> Optional[str]:
     if not image_path:
         return None
@@ -183,6 +218,10 @@ def _is_valid_point(x: float, y: float) -> bool:
 
 
 def _clamp(value: int, lower: int, upper: int) -> int:
+    return max(lower, min(value, upper))
+
+
+def _clamp_float(value: float, lower: float, upper: float) -> float:
     return max(lower, min(value, upper))
 
 
@@ -265,8 +304,30 @@ def _default_person_score(
         "template_foot_point": None,
         "three_line_status": None,
         "outside_three_line": False,
+        "near_free_throw_center": False,
         "score": DEFAULT_SCORE_WITHOUT_HOMOGRAPHY,
         "reason": reason,
+    }
+
+
+def _build_person_score(
+    person: PersonDetection,
+    foot_point: Point,
+    template_foot_point: Point,
+    status: Dict[str, Any],
+) -> Dict[str, Any]:
+    score = int(status.get("score", DEFAULT_SCORE_WITHOUT_HOMOGRAPHY))
+    return {
+        "id": person.get("id"),
+        "conf": _to_float(person.get("conf")),
+        "xyxy": person.get("xyxy", []),
+        "foot_point": list(foot_point),
+        "template_foot_point": [template_foot_point[0], template_foot_point[1]],
+        "three_line_status": status,
+        "outside_three_line": bool(status.get("outside", False)),
+        "near_free_throw_center": bool(status.get("near_free_throw_center", False)),
+        "score": score,
+        "reason": "ok",
     }
 
 
@@ -299,24 +360,17 @@ def score_person(
     except ValueError as error:
         return _default_person_score(person, str(error), foot_point=foot_point)
 
-    outside = bool(status["outside"])
-    return {
-        "id": person.get("id"),
-        "conf": _to_float(person.get("conf")),
-        "xyxy": person.get("xyxy", []),
-        "foot_point": list(foot_point),
-        "template_foot_point": [template_foot_point[0], template_foot_point[1]],
-        "three_line_status": status,
-        "outside_three_line": outside,
-        "score": 3 if outside else 2,
-        "reason": "ok",
-    }
+    return _build_person_score(person, foot_point, template_foot_point, status)
 
 
 def _person_color(person: PersonDetection) -> Tuple[int, int, int]:
     if person.get("reason") != "ok":
         return COLOR_DEFAULT_SCORE
-    return COLOR_THREE_POINT if int(person.get("score", 2)) == 3 else COLOR_TWO_POINT
+
+    score = int(person.get("score", DEFAULT_SCORE_WITHOUT_HOMOGRAPHY))
+    if score == 1:
+        return COLOR_ONE_POINT
+    return COLOR_THREE_POINT if score == 3 else COLOR_TWO_POINT
 
 
 def _score_label(person: PersonDetection) -> str:
@@ -325,6 +379,8 @@ def _score_label(person: PersonDetection) -> str:
 
     if person.get("reason") != "ok":
         area = "DEFAULT"
+    elif score == 1:
+        area = "FT1"
     elif person.get("outside_three_line"):
         area = "OUT"
     else:
@@ -460,6 +516,109 @@ def draw_score_report_on_image(
     return str(output_file)
 
 
+def _template_color_and_mask(cv2_module: Any, template_image: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    if len(template_image.shape) == 2:
+        color = cv2_module.cvtColor(template_image, cv2_module.COLOR_GRAY2BGR)
+        mask = np.where(template_image < TEMPLATE_WHITE_THRESHOLD, 255, 0).astype(np.uint8)
+        return color, mask
+
+    if template_image.shape[2] == 4:
+        color = template_image[:, :, :3]
+        alpha = template_image[:, :, 3]
+        if np.any(alpha < 250):
+            return color, alpha
+
+        non_white = np.any(color < TEMPLATE_WHITE_THRESHOLD, axis=2)
+        return color, np.where(non_white, 255, 0).astype(np.uint8)
+
+    color = template_image[:, :, :3]
+    non_white = np.any(color < TEMPLATE_WHITE_THRESHOLD, axis=2)
+    return color, np.where(non_white, 255, 0).astype(np.uint8)
+
+
+def _prepare_template_for_homography(
+    cv2_module: Any,
+    template_color: np.ndarray,
+    template_mask: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray]:
+    template_height, template_width = template_color.shape[:2]
+    if template_width == TEMPLATE_WIDTH and template_height == TEMPLATE_HEIGHT:
+        return template_color, template_mask
+
+    size = (TEMPLATE_WIDTH, TEMPLATE_HEIGHT)
+    resized_color = cv2_module.resize(template_color, size, interpolation=cv2_module.INTER_AREA)
+    resized_mask = cv2_module.resize(template_mask, size, interpolation=cv2_module.INTER_AREA)
+    return resized_color, resized_mask
+
+
+def overlay_template_on_score_image(
+    score_image_path: str,
+    homography: Sequence[Sequence[float]],
+    template_path: str = TEMPLATE_IMG_PATH,
+    output_path: Optional[str] = None,
+    alpha: float = DEFAULT_TEMPLATE_OVERLAY_ALPHA,
+    show: bool = False,
+) -> str:
+    """
+    将模板图按单应性矩阵反向投影后，叠加到已经绘制分数的原图上。
+
+    homography 是“原图 -> 模板图”的矩阵，因此这里会使用它的逆矩阵。
+    """
+    import cv2
+
+    score_image = cv2.imread(str(score_image_path), cv2.IMREAD_COLOR)
+    if score_image is None:
+        raise FileNotFoundError(f"image not found: {score_image_path}")
+
+    template_image = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
+    if template_image is None:
+        raise FileNotFoundError(f"template image not found: {template_path}")
+
+    image_to_template = np.asarray(homography, dtype=np.float64)
+    if image_to_template.shape != (3, 3):
+        raise ValueError("homography must be a 3x3 matrix")
+
+    template_to_image = np.linalg.inv(image_to_template)
+    if not np.all(np.isfinite(template_to_image)):
+        raise ValueError("inverse homography contains invalid values")
+
+    template_color, template_mask = _template_color_and_mask(cv2, template_image)
+    template_color, template_mask = _prepare_template_for_homography(
+        cv2,
+        template_color,
+        template_mask,
+    )
+
+    height, width = score_image.shape[:2]
+    warped_template = cv2.warpPerspective(template_color, template_to_image, (width, height))
+    warped_mask = cv2.warpPerspective(template_mask, template_to_image, (width, height))
+
+    alpha = _clamp_float(alpha, 0.0, 1.0)
+    mask = (warped_mask.astype(np.float32) / 255.0) * alpha
+    mask = mask[:, :, None]
+
+    blended = (
+        score_image.astype(np.float32) * (1.0 - mask)
+        + warped_template.astype(np.float32) * mask
+    )
+    blended = np.clip(blended, 0, 255).astype(np.uint8)
+
+    if output_path is None:
+        output_path = default_template_overlay_output_path(score_image_path, score_image_path)
+
+    output_file = Path(output_path)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    if not cv2.imwrite(str(output_file), blended):
+        raise IOError(f"failed to write image: {output_file}")
+
+    if show:
+        cv2.imshow("template_overlay", blended)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    return str(output_file)
+
+
 def build_score_report(
     detections: Dict[str, Any],
     conf_threshold: float = DEFAULT_KEYPOINT_CONF_THRESHOLD,
@@ -520,6 +679,10 @@ def score_from_detection_json(
     visualization_output_path: Optional[str] = None,
     image_path: Optional[str] = None,
     show_visualization: bool = False,
+    template_overlay: bool = True,
+    template_path: str = TEMPLATE_IMG_PATH,
+    template_overlay_output_path: Optional[str] = None,
+    template_overlay_alpha: float = DEFAULT_TEMPLATE_OVERLAY_ALPHA,
 ) -> Dict[str, Any]:
     """
     读取检测 JSON，计算人物脚点的模板坐标，并判断 2 分 / 3 分。
@@ -535,7 +698,10 @@ def score_from_detection_json(
     )
     report["source_json_path"] = str(json_path)
 
-    resolved_image_path = resolve_image_path(image_path or report.get("visualization_path"), json_path)
+    resolved_image_path = resolve_image_path(
+        image_path or report.get("visualization_path"),
+        json_path,
+    )
     if visualize and resolved_image_path:
         visualization_output_path = visualization_output_path or default_visualization_output_path(
             resolved_image_path,
@@ -547,6 +713,39 @@ def score_from_detection_json(
             output_path=visualization_output_path,
             show=show_visualization,
         )
+
+        if template_overlay:
+            if report.get("homography") is None:
+                report["template_overlay_error"] = (
+                    "homography_unavailable_skip_template_overlay"
+                )
+            else:
+                resolved_template_path = resolve_image_path(template_path, json_path)
+                template_overlay_output_path = (
+                    template_overlay_output_path
+                    or default_template_overlay_output_path(
+                        report["score_visualization_path"],
+                        json_path,
+                    )
+                )
+                try:
+                    report["template_overlay_path"] = overlay_template_on_score_image(
+                        report["score_visualization_path"],
+                        report["homography"],
+                        template_path=resolved_template_path or template_path,
+                        output_path=template_overlay_output_path,
+                        alpha=template_overlay_alpha,
+                        show=show_visualization,
+                    )
+                except (
+                    FileNotFoundError,
+                    IOError,
+                    ValueError,
+                    np.linalg.LinAlgError,
+                ) as error:
+                    report["template_overlay_error"] = str(error)
+    elif template_overlay:
+        report["template_overlay_error"] = "score_visualization_unavailable"
 
     if save_result:
         output_path = output_path or default_score_output_path(json_path)
@@ -611,6 +810,27 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Show visualization window after saving.",
     )
+    parser.add_argument(
+        "--template",
+        default=TEMPLATE_IMG_PATH,
+        help="Template image path to warp and overlay on the score visualization.",
+    )
+    parser.add_argument(
+        "--overlay-output",
+        default=None,
+        help="Path to save template-overlay image. Defaults to *_template_overlay.",
+    )
+    parser.add_argument(
+        "--overlay-alpha",
+        type=float,
+        default=DEFAULT_TEMPLATE_OVERLAY_ALPHA,
+        help="Template line opacity for overlay image, in [0, 1].",
+    )
+    parser.add_argument(
+        "--no-template-overlay",
+        action="store_true",
+        help="Do not create the template-overlay visualization image.",
+    )
     return parser.parse_args()
 
 
@@ -627,11 +847,18 @@ if __name__ == "__main__":
         visualization_output_path=args.vis_output,
         image_path=args.image,
         show_visualization=args.show,
+        template_overlay=not args.no_template_overlay,
+        template_path=args.template,
+        template_overlay_output_path=args.overlay_output,
+        template_overlay_alpha=args.overlay_alpha,
     )
     print("homography_available:", result["homography_available"])
     print("valid_keypoint_count:", result["valid_keypoint_count"])
     print("score_json_path:", result.get("score_json_path"))
     print("score_visualization_path:", result.get("score_visualization_path"))
+    print("template_overlay_path:", result.get("template_overlay_path"))
+    if result.get("template_overlay_error"):
+        print("template_overlay_error:", result["template_overlay_error"])
     for person in result["persons"]:
         print(
             f"person {person['id']}: score={person['score']}, "

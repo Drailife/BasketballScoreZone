@@ -463,10 +463,9 @@ def process_and_visualize(
 
 
 if __name__ == "__main__":
-    image = "python/testImgs/right.png"
     from argparse import ArgumentParser
     parser = ArgumentParser(description="Generate detection data for a single image.")
-    parser.add_argument("image", nargs="?", default=image, help="Path to the input image.")
+    parser.add_argument("image", help="Path to the input image.")
     parser.add_argument("--pose_model", default=DEFAULT_POSE_MODEL_PATH, help="Path to the pose estimation model.")
     parser.add_argument("--person_model", default=DEFAULT_PERSON_MODEL_PATH, help="Path to the person detection model.")
     parser.add_argument("--conf", type=float, default=0.5, help="Confidence threshold for predictions.")
@@ -477,7 +476,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     try:
         output = process_and_visualize(
-            image,
+            image_path=args.image,
             pose_model_path=args.pose_model,
             person_model_path=args.person_model,
             conf=args.conf,
