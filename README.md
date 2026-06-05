@@ -1,242 +1,303 @@
-# 篮球AI分析：场地线单应性矩阵和透视变换核心算法
+# BasketballScoreZone
 
-## 算法流程
+篮球场地映射与球员得分区域判断工具。
 
-**输入**: 用户图像6个关键点（归一化坐标）+ 图像尺寸 + 角度信息
+项目当前主要包含两条能力：
 
-**流程**:
-1. 计算单应性矩阵（模板点 ↔ 用户点）
-2. 透视变换映射（模板线条 → 用户图像线条）
+- 场地线映射：根据球场 A-F 关键点计算单应性矩阵，将模板场地线映射到原图。
+- 得分区域判断：读取检测 JSON 中的 `keypoints` 和 `persons`，用人物脚点判断 1 分、2 分或 3 分区域。
 
-**输出**:
-1. JSON格式的场地线条坐标数据
-2. 映射错误，返回错误信息
+核心逻辑在 C++ 中实现，Python 负责检测 JSON 生成、结果回放和图片可视化。
+
+## 核心流程
+
+```text
+输入图像
+  -> strategy/GenerateDetData.py 生成检测 JSON
+  -> C++ ScoreStrategy 读取 A-F 关键点并内部过滤低置信点
+  -> 计算 原图 -> 模板图 的单应性矩阵
+  -> 取人物框底边中心作为脚点
+  -> 将脚点映射到模板坐标
+  -> 判断 1 分 / 2 分 / 3 分
+  -> Python 可选绘制得分结果，并把模板图叠加到结果图上
+```
 
 ## 代码结构
 
-当前仓库已经整理为“C++ 主流程 + Python 数据生成/可视化 + 测试文件”三部分：
+```text
+BasketballCourtMapper.cpp / BasketballCourtMapper.h   场地线映射入口
+ScoreStrategy.cpp / ScoreStrategy.h                   得分区域判断策略
+perspectiveTransform.cpp / perspectiveTransform.h     单应性矩阵与点透视变换
+json.hpp                                              C++ JSON 解析头文件
+main.cpp                                              场地线映射调用示例
 
-```
-BasketballCourtMapper.cpp / BasketballCourtMapper.h   # 场地映射主入口
-ScoreStrategy.cpp / ScoreStrategy.h                   # 三分线判断逻辑
-perspectiveTransform.cpp / perspectiveTransform.h     # 单应性矩阵和透视变换
-main.cpp                                              # C++ 调用示例
+test/
+  test_ScoreStrategy.cpp                              C++ 得分策略 JSON 回放测试
+  test_perspectiveTrans.cpp                           C++ 单应性矩阵测试
 
-test/                                                 # C++ 测试入口
-    ├── test_ScoreStrategy.cpp
-    └── test_perspectiveTrans.cpp
+strategy/
+  GenerateDetData.py                                  生成关键点、人物框检测 JSON
+  ScoreStrategy.py                                    Python 计分、可视化、模板叠加
+  test_detections.json                                示例检测 JSON
+  test_detections_score.json                          示例计分输出
 
-strategy/                                             # JSON 生成和测试结果
-    ├── GenerateDetData.py
-    ├── ScoreStrategy.py
-    ├── test_detections.json
-    └── test_detections_score.json
-
-python/                                               # OpenCV 可视化与辅助脚本
-```
-
-## 使用方法
-
-```cpp
-#include "BasketballCourtMapper.h"
-
-// 1. 配置输入参数
-MappingConfig config;
-config.isHighschoolMode = true;  // 高中/标准场地模式
-config.imageBWidth = 1920.0;     // 图像宽度
-config.imageBHeight = 1080.0;    // 图像高度
-config.angleYaw = 50.0;          // 角度信息
-config.anglePitch = 0.0;
-config.pointsBnorm = userPoints; // 用户打点（6个，归一化坐标）
-
-// 2. 执行映射
-BasketballCourtMapper mapper;
-MappingResult result = mapper.basketballLineMappingRun(config);
-
-// 3. 获取结果
-if (result.success) {
-    // 成功：result.halfCourtLines 包含所有场地线条数据
-} else {
-    // 失败：result.errorMessage 包含错误信息
-}
+python/
+  testImgs/                                           示例图片、检测 JSON、可视化结果
+  base/                                               标准球场模板图
 ```
 
-### 结构体
+## 输入 JSON
 
-```cpp
-// 输入：参数配置结构体
-struct MappingConfig {
-    bool isHighschoolMode = false; //默认standard模式
-    float imageBWidth;
-    float imageBHeight;
-    float angleYaw;
-    float anglePitch;
-    std::vector<Point2f> pointsBnorm;
-};
+C++ 测试和策略应该读取原始 `keypoints` 字段，不要把 `valid_keypoints` 当作输入。`valid_keypoints` 是 Python 计分后输出的调试字段。
 
-// 其中，数据类型：
-struct Point2f {
-    float x, y;
-    Point2f() : x(0.0f), y(0.0f) {}
-    Point2f(float x, float y) : x(x), y(y) {}
-};
-
-// 输出：输出结构体 
-struct MappingResult {
-    bool success;
-    bool isHighschoolMode;
-    HalfCourtLines halfCourtLines;
-    std::string errorMessage;
-};
-```
-
-## 输出格式
+推荐输入格式如下：
 
 ```json
 {
-    "yaw": 50,
-    "pitch": 0,
-    "halfcourt": "rightCourt",
-    "lines": [
-        {
-            "name": "sideLine",
-            "tag": 1,
-            "points": [{"x": 0.415856, "y": 0.390782}, ...]
-        },
-        {
-            "name": "endLine", 
-            "tag": 2,
-            "points": [{"x": 0.416826, "y": 0.390694}, ...]
-        }
-    ]
+  "image_path": "python/testImgs/right.png",
+  "image_width": 2719,
+  "image_height": 1508,
+  "keypoints": [
+    {"label": "A", "x": 188.4, "y": 17.5, "conf": 0.91},
+    {"label": "B", "x": 931.5, "y": 21.8, "conf": 0.88},
+    {"label": "C", "x": 1806.8, "y": 17.5, "conf": 0.84},
+    {"label": "D", "x": 2541.0, "y": 8.7, "conf": 0.06},
+    {"label": "E", "x": 931.5, "y": 974.3, "conf": 0.93},
+    {"label": "F", "x": 1797.4, "y": 978.6, "conf": 0.90}
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "xyxy": [100.0, 200.0, 180.0, 520.0],
+      "conf": 0.86
+    }
+  ]
 }
+```
+
+字段说明：
+
+- `image_width` / `image_height`：原图尺寸。
+- `keypoints`：球场 A-F 六个关键点，坐标是原图像素坐标。
+- `persons[].xyxy`：人物框，格式是 `[x1, y1, x2, y2]`，坐标是原图像素坐标。
+- `conf`：检测置信度。
+
+## C++ 得分策略
+
+`ScoreStrategy` 对外只需要先初始化一次 A-F 关键点，之后每个人只传人物框或人物脚点即可。
+
+注意：C++ 接口使用归一化坐标，测试文件会把 JSON 像素坐标除以图像宽高。
+
+```cpp
+#include "ScoreStrategy.h"
+
+using namespace XbotGoAiAnalysis;
+
+Point2f normalizedPoint(float x, float y, float w, float h, float score = 0.0f) {
+    return Point2f(x / w, y / h, score);
+}
+
+std::vector<Point2f> keypoints(6);
+keypoints[0] = normalizedPoint(xA, yA, imageWidth, imageHeight, confA); // A
+keypoints[1] = normalizedPoint(xB, yB, imageWidth, imageHeight, confB); // B
+keypoints[2] = normalizedPoint(xC, yC, imageWidth, imageHeight, confC); // C
+keypoints[3] = normalizedPoint(xD, yD, imageWidth, imageHeight, confD); // D
+keypoints[4] = normalizedPoint(xE, yE, imageWidth, imageHeight, confE); // E
+keypoints[5] = normalizedPoint(xF, yF, imageWidth, imageHeight, confF); // F
+
+ScoreStrategy strategy(keypoints);
+if (!strategy.isReady()) {
+    // 点不足或单应性矩阵失败时，后续判断会默认返回 2 分。
+    std::cout << strategy.lastError() << std::endl;
+}
+
+Point2f leftTop = normalizedPoint(x1, y1, imageWidth, imageHeight);
+Point2f rightBottom = normalizedPoint(x2, y2, imageWidth, imageHeight);
+
+ScoreResult result = strategy.judgePlayerBox(leftTop, rightBottom);
+std::cout << "score=" << result.score << ", reason=" << result.reason << std::endl;
+```
+
+如果你已经有了人物脚点，可以直接调用：
+
+```cpp
+Point2f footPointNorm(footX / imageWidth, footY / imageHeight);
+ScoreResult result = strategy.judgePlayerPoint(footPointNorm);
+```
+
+## 关键点过滤规则
+
+`ScoreStrategy` 内部会自己决定哪些 A-F 点参与单应性矩阵计算，外部不需要提前筛选。
+
+- 必须按 A-F 顺序传入 6 个点。
+- `(0, 0)` 会被视为缺失点并跳过。
+- `0 < score < 0.5` 会被视为低置信点并跳过。
+- `score == 0` 表示调用方没有提供置信度，只要坐标合法就会参与计算。
+- 有效点少于 4 个时，无法计算单应性矩阵，最终默认按 2 分处理。
+
+C++ 中模板 A-F 点已经内置为相对坐标：
+
+```cpp
+[(0.0688468, 0.0115942),
+ (0.3425129, 0.0144928),
+ (0.6643718, 0.0115942),
+ (0.9345955, 0.0057971),
+ (0.3425129, 0.6463768),
+ (0.6609294, 0.6492754)]
+```
+
+## 得分判断规则
+
+人物框会先取底边中心作为脚点：
+
+```text
+foot_x = (x1 + x2) / 2
+foot_y = y2
+```
+
+脚点映射到模板图后，按以下逻辑判断：
+
+- 1 分：脚点位于罚球点附近区域，当前阈值为模板像素距离 `25`。
+- 3 分：脚点位于三分线外。
+- 2 分：不属于 1 分且不在三分线外。
+
+默认 `lineAsOutside = true`，也就是贴近三分线会按线外处理。失败场景下 `ScoreResult.score` 默认是 `2`，`ScoreResult.reason` 会记录原因。
+
+## Python 数据生成
+
+生成检测 JSON：
+
+```bash
+python3 strategy/GenerateDetData.py python/testImgs/right.png \
+  --json_output python/testImgs/right_detections.json \
+  --verbose
+```
+
+依赖模型默认位于：
+
+```text
+model/three-point-line-pose.pt
+model/yolov11n_1280_person_ball_backboard_hoop_rect.pt
+```
+
+## Python 计分与可视化
+
+对检测 JSON 进行计分，并在原图上绘制每个人的分数：
+
+```bash
+python3 strategy/ScoreStrategy.py python/testImgs/right_detections.json \
+  --image python/testImgs/right.png
+```
+
+默认会输出：
+
+- `*_score.json`：计分结果 JSON。
+- `*_score_vis.png`：在原图上绘制人物框、脚点和 1PT/2PT/3PT。
+- `*_score_vis_template_overlay.png`：把模板图透视叠加到已经绘制分数的图片上。
+
+常用参数：
+
+```bash
+python3 strategy/ScoreStrategy.py python/testImgs/right_detections.json \
+  --image python/testImgs/right.png \
+  --vis-output python/testImgs/right_score_vis.png \
+  --overlay-output python/testImgs/right_score_overlay.png \
+  --overlay-alpha 0.45
+```
+
+如果不需要模板叠加：
+
+```bash
+python3 strategy/ScoreStrategy.py python/testImgs/right_detections.json --no-template-overlay
 ```
 
 ## 编译运行
 
-仓库当前使用 CMake 编译：
+项目使用 CMake 编译，C++ 标准为 C++17。
 
 ```bash
 cmake -S . -B build
 cmake --build build -j
 ```
 
-运行可执行文件：
+如果 `build/` 是从旧目录复制或移动过来的，CMake 可能会提示缓存路径不一致。此时先清理旧缓存再重新配置：
+
+```bash
+rm -rf build
+cmake -S . -B build
+cmake --build build -j
+```
+
+运行测试：
 
 ```bash
 ./build/test_score
 ./build/test_perspectiveTrans
-./build/demo
 ```
 
-如果要清理生成文件：
-
-```bash
-rm -rf build
-```
-
-## 错误代码表
-
-| 错误代码 | 错误名称 | 中文错误信息 | 英文错误信息 | 中文描述 | 英文描述 |
-|---------|---------|-------------|-------------|----------|----------|
-| 0 | SUCCESS | 成功 | Success | 操作成功完成 | Operation completed successfully |
-| 1001 | INVALID_KEY_POINTS_COUNT | 关键点数量错误 | Invalid key points count | 关键点数量必须为6个 | Key points count must be 6 |
-| 1002 | INSUFFICIENT_POINTS | 点数不足 | Insufficient points | 打点点位数量不足2个 | Insufficient marked points (less than 2) |
-| 1003 | INVALID_COORDINATE_RANGE | 坐标范围错误 | Invalid coordinate range | 关键点坐标必须在[0,1]范围内 | Key point coordinates must be in [0,1] range |
-| 1004 | INVALID_KEY_POINTS_ORDER | 关键点顺序错误 | Invalid key points order | 关键点顺序不符合要求 | Key points order does not meet requirements |
-| 10041 | INVALID_KEY_POINTS_ORDER_1_2 | 检测到1号点位和2号点位错误，请进行调整 | Detected 1st and 2nd key points error, please adjust | 检测到1号点位和2号点位错误，请进行调整 | Detected 1st and 2nd key points error, please adjust |
-| 10042 | INVALID_KEY_POINTS_ORDER_2_3 | 检测到2号点位和3号点位错误，请进行调整 | Detected 2nd and 3rd key points error, please adjust | 检测到2号点位和3号点位错误，请进行调整 | Detected 2nd and 3rd key points error, please adjust |
-| 10043 | INVALID_KEY_POINTS_ORDER_3_4 | 检测到3号点位和4号点位错误，请进行调整 | Detected 3rd and 4th key points error, please adjust | 检测到3号点位和4号点位错误，请进行调整 | Detected 3rd and 4th key points error, please adjust |
-| 10044 | INVALID_KEY_POINTS_ORDER_5_6 | 检测到5号点位和6号点位错误，请进行调整 | Detected 5th and 6th key points error, please adjust | 检测到5号点位和6号点位错误，请进行调整 | Detected 5th and 6th key points error, please adjust |
-| 1005 | KEY_POINTS_VALIDATION_FAILED | 关键点验证失败 | Key points validation failed | 关键点验证未通过 | Key points validation did not pass |
-| 2001 | HOMOGRAPHY_CALCULATION_FAILED | 单应性矩阵计算失败 | Mapping calculation failed | 计算单应性矩阵时出错 | Error occurred while calculating mapping matrix |
-| 2002 | HOMOGRAPHY_MATRIX_INVALID | 单应性矩阵无效 | Invalid mapping matrix | 单应性矩阵维度不正确 | Mapping matrix dimension is incorrect |
-| 2003 | HOMOGRAPHY_MATRIX_SINGULAR | 单应性矩阵奇异 | Singular mapping matrix | 单应性矩阵接近奇异，计算结果不可靠 | Mapping matrix is near singular, calculation result unreliable |
-| 3001 | POINT_MAPPING_FAILED | 点映射失败 | Point mapping failed | 点映射过程中出现错误 | Error occurred during point mapping |
-| 3002 | INVALID_MAPPING_RESULT | 映射结果无效 | Invalid mapping result | 点映射结果无效 | Point mapping result is invalid |
-| 4001 | UNKNOWN_LINE_TYPE | 未知线条类型 | Unknown line type | 指定的线条类型不存在 | Specified line type does not exist |
-| 5001 | SVD_DECOMPOSITION_FAILED | SVD分解失败 | SVD decomposition failed | 矩阵SVD分解过程中出现错误 | Error occurred during matrix SVD decomposition |
-| 5002 | MATRIX_DIMENSION_MISMATCH | 矩阵维度不匹配 | Matrix dimension mismatch | 矩阵维度不一致，无法相乘 | Matrix dimensions are inconsistent, cannot multiply |
-| 5003 | MATRIX_TOO_LARGE | 矩阵过大 | Matrix too large | 矩阵过大，可能导致计算不稳定 | Matrix is too large, may cause calculation instability |
-| 5004 | MATRIX_EMPTY | 矩阵为空 | Matrix is empty | 输入矩阵为空 | Input matrix is empty |
-| 9999 | UNKNOWN_ERROR | 未知错误 | Unknown error | 发生了未知错误 | An unknown error occurred |
-
-### 错误代码分类
-
-- **1000-1999**: 输入参数验证错误
-- **2000-2999**: 单应性矩阵计算错误
-- **3000-3999**: 点映射和结果验证错误
-- **4000-4999**: 线条类型相关错误
-- **5000-5999**: 数学计算错误
-- **9999**: 未知错误
-
-## 技术文档
-
-[详细算法文档](https://doc.weixin.qq.com/doc/w3_AWkA7QaoAF0CNJJaBiKWiSzCLPhhP?scode=ADgAsAdWAA4ZWdFohcAWkA7QaoAF0)
-
-
-
-
-## 三分线判定与可视化
-
-当前仓库新增了 `ScoreStrategy` 的三分线判定流程，以及 `test/test_ScoreStrategy.cpp` 的 JSON 回放测试。
-
-### JSON 生成来源
-
-`strategy/test_detections_score.json` 由 `strategy/GenerateDetData.py` 和 `strategy/ScoreStrategy.py` 生成：
-- `strategy/GenerateDetData.py` 负责读取检测结果并整理成统一的 JSON 结构
-- `strategy/ScoreStrategy.py` 负责三分线可视化、关键点判断与最终结果输出
-
-如果需要重新生成测试 JSON，请先确保这两个脚本使用的是同一份输入图像和同一套模型输出。
-
-### 输入数据
-
-测试文件使用 `strategy/test_detections_score.json`，其中包含：
-- `valid_keypoints`: 三分线 6 个关键点 A-F
-- `persons`: 检测到的人物框、脚点和置信度
-- `image_width` / `image_height`: 原图尺寸
-
-### 判定逻辑
-
-1. 先读取 A-F 三分线关键点。
-2. 构建单应性矩阵。
-3. 再读取每个人的脚点。
-4. 对每个人的脚点调用 `ScoreStrategy::judgePlayerPoint`。
-5. 输出该点位是三分线内还是三分线外，结果为 2 分或 3 分。
-
-### 编译方式
-
-项目根目录使用 CMake：
-
-```bash
-cmake -S . -B build
-cmake --build build -j
-./build/test_score
-```
-
-如需运行主程序：
+运行场地线映射示例：
 
 ```bash
 ./build/demo
 ```
 
-清理生成文件：
+当前 `test/test_ScoreStrategy.cpp` 默认读取：
 
-```bash
-rm -rf build
+```text
+python/testImgs/right_detections.json
 ```
 
-### 注意事项
+如果要测试自己的图片，请先生成同结构的检测 JSON，或修改测试文件中的 JSON 路径。
 
-- `Point2f` 当前结构包含 `x`、`y`、`score` 三个字段。
-- 构建单应性矩阵时会自动忽略 `score < 0.5` 的关键点。
-- 剔除后若有效点少于 4 个，`ScoreStrategy` 会返回 `false`。
+## 场地线映射接口
 
-### 目录说明
+除了得分策略，项目仍保留 `BasketballCourtMapper` 场地线映射能力。
 
-- `BasketballCourtMapper.cpp/.h`：主映射入口
-- `ScoreStrategy.cpp/.h`：三分线判断逻辑
-- `perspectiveTransform.cpp/.h`：单应性矩阵和透视变换
-- `test/`：测试入口文件
-- `strategy/`：JSON 生成脚本、测试数据和可视化结果
-- `python/`：Python 可视化与辅助脚本
+```cpp
+#include "BasketballCourtMapper.h"
+
+MappingConfig config;
+config.isHighschoolMode = false;
+config.imageBWidth = 1920.0f;
+config.imageBHeight = 1080.0f;
+config.angleYaw = 50.0f;
+config.anglePitch = 0.0f;
+config.pointsBnorm = userPoints; // 6 个归一化关键点
+
+BasketballCourtMapper mapper;
+MappingResult result = mapper.basketballLineMappingRun(config);
+
+if (result.success) {
+    // result.halfCourtLines 包含映射后的场地线
+} else {
+    // result.errorMessage 包含失败原因
+}
+```
+
+## 坐标约定
+
+- JSON 中的关键点和人物框是像素坐标。
+- C++ `ScoreStrategy` 输入是归一化坐标，范围 `[0, 1]`。
+- C++ 模板 A-F 点使用归一化坐标。
+- Python `strategy/ScoreStrategy.py` 内部使用 `581 x 345` 模板像素坐标进行可视化和模板叠加。
+
+## 依赖
+
+C++：
+
+- CMake 3.16+
+- 支持 C++17 的编译器
+- 仓库内置 `json.hpp`
+
+Python：
+
+- `numpy`
+- `opencv-python`
+- `ultralytics`
+
+## 开发备注
+
+- 计分策略的主要调用文件是 `ScoreStrategy.cpp` / `ScoreStrategy.h`。
+- `test/test_ScoreStrategy.cpp` 展示了从 JSON 读取 `keypoints` 和 `persons.xyxy` 的完整流程。
+- 低置信关键点过滤已经放在 `ScoreStrategy` 内部，调用方只需要传原始 A-F 点。
+- 当单应性矩阵不可用时，策略会按默认 2 分返回，避免因为关键点缺失导致流程中断。
