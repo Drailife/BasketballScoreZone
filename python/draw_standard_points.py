@@ -90,7 +90,7 @@ def draw_points(image, lines):
             print(f"  {point_index:02d}: ({x}, {y})  ({pt[0]*width:.3f}, {pt[1]*height:.3f})")
             cv2.circle(canvas, (x, y), 3, color, -1)
             label_text = f"{line_index}-{point_index}"
-            norm_text = f"({pt[0]*width:.3f}, {pt[1]*height:.3f})"
+            norm_text = f"({pt[0]:.3f}, {pt[1]:.3f})"
 
             label_origin = clamp_text_origin(
                 label_text,
